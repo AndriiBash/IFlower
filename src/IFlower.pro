@@ -9,14 +9,20 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    bluetoothconnectform.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
+    bluetoothconnectform.h \
     mainwindow.h
 
 FORMS += \
+    bluetoothconnectform.ui \
     mainwindow.ui
+
+
+TARGET = iFlower
 
 
 # MacOS specific for use bluetooth and custom info.plist

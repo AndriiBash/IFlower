@@ -10,8 +10,10 @@ int main(int argc, char *argv[])
 
     app.requestPermission(QBluetoothPermission(), [](const QPermission &permission)
     {
-        ///test;
+        /// if for check premission bluetooth
+        /// test;
     });
+
 
     MainWindow w;
     w.show();

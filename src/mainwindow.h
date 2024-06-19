@@ -7,14 +7,17 @@
 
 #include <QLowEnergyService>
 #include <QLowEnergyController>
+#include <QLowEnergyService>
+#include <QLowEnergyServiceData>
+#include <QLowEnergyController>
 #include <QBluetoothDeviceDiscoveryAgent>
-
-
 #include <QBluetoothUuid>
 #include <QBluetoothPermission>
 
 
 #include <QListWidget>
+
+#include "bluetoothconnectform.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -32,15 +35,29 @@ public:
 
 
 private slots:
-    void on_scanButton_clicked();
+    // button
+    void on_pushButton_clicked();
+    void on_pushButton_2_clicked();
+    void on_offLedButton_clicked();
+    void on_onLedButton_clicked();
 
-    void deviceDiscovered(const QBluetoothDeviceInfo &device);
+    // bluetooth
+    void deviceConnected();
+    void deviceDisconnected();
+    void errorReceived(QLowEnergyController::Error error);
+    void serviceStateChanged(QLowEnergyService::ServiceState newState);
+    void updateCharacteristicValue(const QLowEnergyCharacteristic &characteristic, const QByteArray &newValue);
+
 
 private:
     Ui::MainWindow *ui;
 
-    //QBluetoothServiceDiscoveryAgent *discoveryAgent;
+    // Bluetooth
+    QBluetoothDeviceDiscoveryAgent *deviceDiscoveryAgent;
+    QLowEnergyController *lowEnergyController;
+    QLowEnergyService *lowEnergyService;
 
+    BluetoothConnectForm *bluetoothConnectForm;
     //QLowEnergyController *controller;
 };
 #endif // MAINWINDOW_H
