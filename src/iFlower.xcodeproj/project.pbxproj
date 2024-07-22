@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B5447F6F2C40036C00EDD693 /* DeviceControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5447F6E2C40036C00EDD693 /* DeviceControllerView.swift */; };
+		B57882362C3AE34400F00AC5 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57882352C3AE34400F00AC5 /* StartView.swift */; };
+		B57882382C3AEA1600F00AC5 /* RowStartInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57882372C3AEA1600F00AC5 /* RowStartInfoViewModel.swift */; };
 		B5F653992C2B075F0097EFBA /* iFlowerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F653982C2B075F0097EFBA /* iFlowerApp.swift */; };
 		B5F6539B2C2B075F0097EFBA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F6539A2C2B075F0097EFBA /* ContentView.swift */; };
 		B5F6539D2C2B07600097EFBA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5F6539C2C2B07600097EFBA /* Assets.xcassets */; };
@@ -16,6 +19,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B5447F6E2C40036C00EDD693 /* DeviceControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceControllerView.swift; sourceTree = "<group>"; };
+		B57882352C3AE34400F00AC5 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StartView.swift; path = iFlower/View/StartView.swift; sourceTree = SOURCE_ROOT; };
+		B57882372C3AEA1600F00AC5 /* RowStartInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowStartInfoViewModel.swift; sourceTree = "<group>"; };
 		B5F653952C2B075F0097EFBA /* iFlower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iFlower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5F653982C2B075F0097EFBA /* iFlowerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iFlowerApp.swift; sourceTree = "<group>"; };
 		B5F6539A2C2B075F0097EFBA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -37,6 +43,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B57882392C3AEA1A00F00AC5 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B57882372C3AEA1600F00AC5 /* RowStartInfoViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
 		B5F6538C2C2B075F0097EFBA = {
 			isa = PBXGroup;
 			children = (
@@ -58,6 +72,7 @@
 			children = (
 				B5F653982C2B075F0097EFBA /* iFlowerApp.swift */,
 				B5F653AD2C2B08150097EFBA /* Manager */,
+				B57882392C3AEA1A00F00AC5 /* ViewModel */,
 				B5F653A82C2B07850097EFBA /* View */,
 				B5F6539C2C2B07600097EFBA /* Assets.xcassets */,
 				B5F653A12C2B07600097EFBA /* iFlower.entitlements */,
@@ -78,7 +93,9 @@
 			isa = PBXGroup;
 			children = (
 				B5F6539A2C2B075F0097EFBA /* ContentView.swift */,
+				B5447F6E2C40036C00EDD693 /* DeviceControllerView.swift */,
 				B5F653AB2C2B080E0097EFBA /* BluetoothConnectView.swift */,
+				B57882352C3AE34400F00AC5 /* StartView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -128,11 +145,12 @@
 			};
 			buildConfigurationList = B5F653902C2B075F0097EFBA /* Build configuration list for PBXProject "iFlower" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = uk;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				uk,
 			);
 			mainGroup = B5F6538C2C2B075F0097EFBA;
 			productRefGroup = B5F653962C2B075F0097EFBA /* Products */;
@@ -162,9 +180,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5F653AC2C2B080E0097EFBA /* BluetoothConnectView.swift in Sources */,
+				B57882362C3AE34400F00AC5 /* StartView.swift in Sources */,
+				B57882382C3AEA1600F00AC5 /* RowStartInfoViewModel.swift in Sources */,
 				B5F6539B2C2B075F0097EFBA /* ContentView.swift in Sources */,
 				B5F653AA2C2B07F70097EFBA /* BluetoothManager.swift in Sources */,
 				B5F653992C2B075F0097EFBA /* iFlowerApp.swift in Sources */,
+				B5447F6F2C40036C00EDD693 /* DeviceControllerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

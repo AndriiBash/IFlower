@@ -7,51 +7,87 @@
 
 import SwiftUI
 
-struct BluetoothConnectView: View {
-    @StateObject var bluetoothManager = BluetoothManager()
-    @State private var dataToSend = ""
-
-    var body: some View {
-        VStack {
-            Text("Bluetooth Devices")
-                .font(.largeTitle)
-                .padding()
-
-            List(bluetoothManager.deviceInfos, id: \.0) { device in
-                VStack(alignment: .leading) {
+struct BluetoothConnectView: View
+{
+    @ObservedObject var bluetoothManager: BluetoothManager
+    @Binding var activeTab: String
+    @State private var buttonIsClicked: Bool = true
+    
+    var body: some View
+    {
+        VStack
+        {
+            List(bluetoothManager.deviceInfos, id: \.0)
+            { device in
+                VStack(alignment: .leading)
+                {
                     Text("Name: \(device.1)")
                     Text("MAC Address: \(device.0)")
-                    Button(action: {
-                        if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 }) {
+                    
+                    Button
+                    {
+                        if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                        {
                             let peripheral = bluetoothManager.peripherals[index]
                             bluetoothManager.connect(to: peripheral)
+                            
+                            activeTab = "\(device.1)"
+                            print("\(activeTab)")
                         }
-                    }) {
-                        Text("Connect")
+                    }
+                    label:
+                    {
+                        Text("Додати")
                             .foregroundColor(.blue)
                     }
                 }
                 .padding()
             }
+            
+            VStack
+            {
+                if buttonIsClicked
+                {
+                    HStack(spacing: 4)
+                    {
+                        ProgressView()
+                            .controlSize(.small)    
 
-            TextField("Data to send", text: $dataToSend)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
-            Button(action: {
-                bluetoothManager.sendData(dataToSend)
-            }) {
-                Text("Send Data")
-                    .foregroundColor(.blue)
-            }
-            .padding()
+                        Text("Триває пошук...")
+                    }// HStack with ProgressView
+                }
+                
+                Button
+                {
+                    withAnimation(Animation.easeIn(duration: 0.25))
+                    {
+                        buttonIsClicked.toggle()
+                    }
+                    
+                    if buttonIsClicked
+                    {
+                        bluetoothManager.deviceInfos.removeAll()//{ bluetoothManager.missingDevices.contains($0.0) }
+                        
+                        bluetoothManager.centralManagerDidUpdateState(bluetoothManager.centralManager)
+                        bluetoothManager.startScanning()
+                        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true)
+                        { _ in
+                            bluetoothManager.updateDeviceList()
+                        }
+                    }
+                    else
+                    {
+                        bluetoothManager.stopScanning()
+                    }
+                }
+                label:
+                {
+                    Text(buttonIsClicked ? "Закінчити" : "Почати пошук")
+                }
+                .padding(.vertical, 4)
+            }// VStack with stop and start search bluetooth devices
+            .padding(.vertical, 6)
         }
-        .onAppear {
-            bluetoothManager.centralManagerDidUpdateState(bluetoothManager.centralManager)
-        }
+        .navigationTitle("Bluetooth девайси")
     }
-}
-
-#Preview {
-    BluetoothConnectView()
 }
