@@ -79,21 +79,6 @@ struct DeviceControllerView: View
                     ProgressView("Connecting...")
                         .progressViewStyle(CircularProgressViewStyle())
                         .padding()
-                        .onAppear
-                        {
-                            if bluetoothManager.bluetoothEnabled
-                            {
-                                if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
-                                {
-                                    let peripheral = bluetoothManager.peripherals[index]
-                                    bluetoothManager.connect(to: peripheral)
-                                }
-                            }
-                        }
-                        .onDisappear
-                        {
-                            bluetoothManager.disconnectFromPeripheral()
-                        }
                 }
             }
             else
@@ -135,5 +120,20 @@ struct DeviceControllerView: View
         }// main VStack
         .padding()
         .navigationTitle(device.1)
+        .onAppear
+        {
+            if bluetoothManager.bluetoothEnabled
+            {
+                if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                {
+                    let peripheral = bluetoothManager.peripherals[index]
+                    bluetoothManager.connect(to: peripheral)
+                }
+            }
+        }
+        .onDisappear
+        {
+            bluetoothManager.disconnectFromPeripheral()
+        }
     }
 }
