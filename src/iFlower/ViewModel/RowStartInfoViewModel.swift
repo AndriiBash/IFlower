@@ -39,7 +39,7 @@ struct RowStartInfoViewModel: View
                 
                 Text("\(bodyText)")
                     .font(.callout)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color.gray)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
             } // VStack with info

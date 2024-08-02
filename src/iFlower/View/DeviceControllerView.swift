@@ -12,82 +12,128 @@ struct DeviceControllerView: View
     var device: (String, String)
     @ObservedObject var bluetoothManager: BluetoothManager
     @State private var dataToSend = ""
-    @State private var isConnecting = false
 
     var body: some View
     {
         VStack 
         {
-            if isConnecting 
+            if bluetoothManager.bluetoothEnabled
             {
-                Text("Device Name: \(device.1)")
-                Text("Device Address: \(device.0)")
-                
-                VStack
+                if bluetoothManager.isConnected
                 {
-                    TextField("Data to send", text: $dataToSend)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .padding()
+                    Text("Device Name: \(device.1)")
+                    Text("Device Address: \(device.0)")
                     
-                    Button(action: {
-                        bluetoothManager.sendData(dataToSend)
-                    }) {
-                        Text("Send Data")
-                            .foregroundColor(.blue)
-                    }
-                    .padding()
-                }// VStack with textField sender data
-                
-                Button
-                {
-                    if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                    VStack
                     {
-                        let peripheral = bluetoothManager.peripherals[index]
-                        bluetoothManager.connect(to: peripheral)
+                        TextField("Data to send", text: $dataToSend)
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .padding()
+                        
+                        Button(action: {
+                            bluetoothManager.sendData(dataToSend)
+                        }) {
+                            Text("Send Data")
+                                .foregroundColor(.blue)
+                        }
+                        .padding()
+                    }// VStack with textField sender data
+                    
+                    
+                    if bluetoothManager.isConnected
+                    {
+                        Text("connect")
+                            .foregroundColor(Color.green)
                     }
-                }
-                label:
+                    else
+                    {
+                        Text("NOT connect")
+                            .foregroundColor(Color.red)
+                    }
+                    
+                    
+                    Button
+                    {
+                        if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                        {
+                            let peripheral = bluetoothManager.peripherals[index]
+                            bluetoothManager.connect(to: peripheral)
+                        }
+                    }
+                    label:
+                    {
+                        Text("Сonnect!")
+                    }
+                    
+                    Button
+                    {
+                        bluetoothManager.disconnectFromPeripheral()
+                    }
+                    label:
+                    {
+                        Text("DISCONNECT!")
+                    }
+                }// if process connecting
+                else
                 {
-                    Text("Сonnect!")
+                    ProgressView("Connecting...")
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .padding()
+                        .onAppear
+                        {
+                            if bluetoothManager.bluetoothEnabled
+                            {
+                                if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                                {
+                                    let peripheral = bluetoothManager.peripherals[index]
+                                    bluetoothManager.connect(to: peripheral)
+                                }
+                            }
+                        }
+                        .onDisappear
+                        {
+                            bluetoothManager.disconnectFromPeripheral()
+                        }
                 }
-
-                
-                Button
-                {
-                    bluetoothManager.disconnectFromPeripheral()
-                }
-                label:
-                {
-                    Text("DISCONNECT!")
-                }
-            }// if process connecting
+            }
             else
             {
-                ProgressView("Connecting...")
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .padding()
+                Image(systemName: "antenna.radiowaves.left.and.right.slash")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(Color.red)
+                
+                Text("\(device.1) наразі недоступний бо відсутній Bluetooth")
+                    .font(.body.bold())
+                    .frame(maxWidth: .infinity, alignment: .center)
+
+                HStack(spacing: 4)
+                {
+                    Text("Скоріш за всього в налаштуваннях потрібно включити bluetooth, як це зробити")
+                        .font(.callout)
+                        .foregroundColor(Color.gray)
+                        .frame(alignment: .center)
+                    
+                    Button
+                    {
+                        if let url = URL(string: "https://support.apple.com/guide/mac-help/blth1004/mac")
+                        {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                    label:
+                    {
+                        Text("[Тиць]")
+                            .font(.callout)
+                            .foregroundColor(Color.blue)
+                            .frame(alignment: .center)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                }// HStack with text for open bluetooth help
             }
         }// main VStack
         .padding()
         .navigationTitle(device.1)
-        .onAppear
-        {            
-            isConnecting = false
-                        
-            if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
-            {
-                let peripheral = bluetoothManager.peripherals[index]
-                bluetoothManager.connect(to: peripheral)
-            }
-            
-            withAnimation(Animation.easeInOut(duration: 0.5))
-            {
-                isConnecting = true
-            }
-        } 
-        .onDisappear
-        {
-            bluetoothManager.disconnectFromPeripheral()
-        }
     }
 }

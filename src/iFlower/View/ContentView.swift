@@ -92,6 +92,11 @@ struct ContentView: View
                     isFirstStart.toggle()
                 }
             }
+            .frame(width: 200, height: 450)
         }// detail
+        .sheet(isPresented: $isFirstStart)
+        {
+            StartView()
+        }
     }
 }

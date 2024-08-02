@@ -17,77 +17,116 @@ struct BluetoothConnectView: View
     {
         VStack
         {
-            List(bluetoothManager.deviceInfos, id: \.0)
-            { device in
-                VStack(alignment: .leading)
+            if bluetoothManager.bluetoothEnabled
+            {
+                List(bluetoothManager.deviceInfos, id: \.0)
+                { device in
+                    VStack(alignment: .leading)
+                    {
+                        Text("Назва: \(device.1)")
+                        Text("MAC Адреса: \(device.0)")
+                        
+                        Button
+                        {
+                            if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                            {
+                                let peripheral = bluetoothManager.peripherals[index]
+                                bluetoothManager.connect(to: peripheral)
+                                
+                                activeTab = "\(device.1)"
+                                print("\(activeTab)")
+                            }
+                        }
+                        label:
+                        {
+                            Text("Додати")
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding()
+                }
+                
+                VStack
                 {
-                    Text("Name: \(device.1)")
-                    Text("MAC Address: \(device.0)")
+                    if buttonIsClicked
+                    {
+                        HStack(spacing: 4)
+                        {
+                            ProgressView()
+                                .controlSize(.small)
+
+                            Text("Триває пошук...")
+                        }// HStack with ProgressView
+                    }
                     
                     Button
                     {
-                        if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                        withAnimation(Animation.easeIn(duration: 0.25))
                         {
-                            let peripheral = bluetoothManager.peripherals[index]
-                            bluetoothManager.connect(to: peripheral)
+                            buttonIsClicked.toggle()
+                        }
+                        
+                        if buttonIsClicked
+                        {
+                            bluetoothManager.deviceInfos.removeAll()
                             
-                            activeTab = "\(device.1)"
-                            print("\(activeTab)")
+                            bluetoothManager.centralManagerDidUpdateState(bluetoothManager.centralManager)
+                            bluetoothManager.startScanning()
+                            Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true)
+                            { _ in
+                                bluetoothManager.updateDeviceList()
+                            }
+                        }
+                        else
+                        {
+                            bluetoothManager.stopScanning()
                         }
                     }
                     label:
                     {
-                        Text("Додати")
-                            .foregroundColor(.blue)
+                        Text(buttonIsClicked ? "Закінчити" : "Почати пошук")
                     }
-                }
-                .padding()
+                    .padding(.vertical, 4)
+                }// VStack with stop and start search bluetooth devices
+                .padding(.vertical, 6)
             }
-            
-            VStack
+            else
             {
-                if buttonIsClicked
-                {
-                    HStack(spacing: 4)
-                    {
-                        ProgressView()
-                            .controlSize(.small)    
-
-                        Text("Триває пошук...")
-                    }// HStack with ProgressView
-                }
+                Image(systemName: "antenna.radiowaves.left.and.right.slash")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
+                    .foregroundColor(Color.red)
                 
-                Button
+                Text("Bluetooth наразі недоступний")
+                    .font(.body.bold())
+                    .frame(maxWidth: .infinity, alignment: .center)
+
+                HStack(spacing: 4)
                 {
-                    withAnimation(Animation.easeIn(duration: 0.25))
-                    {
-                        buttonIsClicked.toggle()
-                    }
+                    Text("Скоріш за всього в налаштуваннях потрібно включити bluetooth, як це зробити")
+                        .font(.callout)
+                        .foregroundColor(Color.gray)
+                        .frame(alignment: .center)
                     
-                    if buttonIsClicked
+                    Button
                     {
-                        bluetoothManager.deviceInfos.removeAll()//{ bluetoothManager.missingDevices.contains($0.0) }
-                        
-                        bluetoothManager.centralManagerDidUpdateState(bluetoothManager.centralManager)
-                        bluetoothManager.startScanning()
-                        Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true)
-                        { _ in
-                            bluetoothManager.updateDeviceList()
+                        if let url = URL(string: "https://support.apple.com/guide/mac-help/blth1004/mac")
+                        {
+                            NSWorkspace.shared.open(url)
                         }
                     }
-                    else
+                    label:
                     {
-                        bluetoothManager.stopScanning()
+                        Text("[Тиць]")
+                            .font(.callout)
+                            .foregroundColor(Color.blue)
+                            .frame(alignment: .center)
                     }
-                }
-                label:
-                {
-                    Text(buttonIsClicked ? "Закінчити" : "Почати пошук")
-                }
-                .padding(.vertical, 4)
-            }// VStack with stop and start search bluetooth devices
-            .padding(.vertical, 6)
+                    .buttonStyle(PlainButtonStyle())
+                }// HStack with text for open bluetooth help
+            }
         }
-        .navigationTitle("Bluetooth девайси")
+        .navigationTitle("Bluetooth пристрої")
     }
 }
