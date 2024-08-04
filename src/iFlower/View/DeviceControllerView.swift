@@ -24,6 +24,14 @@ struct DeviceControllerView: View
                     Text("Device Name: \(device.1)")
                     Text("Device Address: \(device.0)")
                     
+                    HStack
+                    {
+                        Text("Вологість ґрунту: ")
+                        Text(bluetoothManager.receivedData)
+                            .foregroundColor(.blue)
+                        Text("%")
+                    }// HStack Received
+                    
                     VStack
                     {
                         TextField("Data to send", text: $dataToSend)
@@ -32,7 +40,7 @@ struct DeviceControllerView: View
                         
                         Button(action: {
                             bluetoothManager.sendData(dataToSend)
-                        }) {
+                            }) {
                             Text("Send Data")
                                 .foregroundColor(.blue)
                         }

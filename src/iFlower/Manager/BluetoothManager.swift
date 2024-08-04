@@ -20,7 +20,8 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     @Published var isScanning: Bool = false
     @Published var bluetoothEnabled: Bool = false
     @Published var isConnected: Bool = false
-    
+    @Published var receivedData: String = ""
+
     var peripherals: [CBPeripheral] = []
     var connectedPeripheral: CBPeripheral?
     var targetCharacteristic: CBCharacteristic?
@@ -72,6 +73,8 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
             {
                 isConnected = false
             }
+            
+            self.receivedData = ""
             
             print("Disconnected from \(peripheral.name ?? "Unknown")")
         }
@@ -164,12 +167,17 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     }// func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?)
 
     
-    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?)
+    func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) 
     {
-        if let characteristics = service.characteristics
+        if let characteristics = service.characteristics 
         {
             for characteristic in characteristics
             {
+                if characteristic.properties.contains(.notify) 
+                {
+                    peripheral.setNotifyValue(true, for: characteristic)
+                    print("Set notify for characteristic: \(characteristic.uuid)")
+                }
                 if characteristic.properties.contains(.write) || characteristic.properties.contains(.writeWithoutResponse)
                 {
                     targetCharacteristic = characteristic
@@ -178,6 +186,35 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
             }
         }
     }// func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?)
+
+    
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) 
+    {
+        if let error = error
+        {
+            print("Error reading characteristic value: \(error.localizedDescription)")
+            return
+        }
+        
+        guard let characteristicValue = characteristic.value else 
+        {
+            print("Characteristic value is nil")
+            return
+        }
+        
+        if let receivedString = String(data: characteristicValue, encoding: .utf8) 
+        {
+            DispatchQueue.main.async
+            {
+                self.receivedData = receivedString
+            }
+            print("Received data: \(receivedString)")
+        } 
+        else
+        {
+            print("Failed to convert data to string")
+        }
+    }// func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?)
 
     
     func sendData(_ data: String)
