@@ -9,10 +9,12 @@ import SwiftUI
 
 struct DeviceControllerView: View 
 {
-    var device: (String, String)
+    var device: DeviceStruct
     @ObservedObject var bluetoothManager: BluetoothManager
-    @State private var dataToSend = ""
-
+    
+    @State private var isShowSetting: Bool = false
+    
+    
     var body: some View
     {
         VStack 
@@ -21,8 +23,8 @@ struct DeviceControllerView: View
             {
                 if bluetoothManager.isConnected
                 {
-                    Text("Device Name: \(device.1)")
-                    Text("Device Address: \(device.0)")
+                    Text("Device Name: \(device.name)")
+                    Text("Device Address: \(device.macAddress)")
                     
                     HStack
                     {
@@ -31,22 +33,6 @@ struct DeviceControllerView: View
                             .foregroundColor(.blue)
                         Text("%")
                     }// HStack Received
-                    
-                    VStack
-                    {
-                        TextField("Data to send", text: $dataToSend)
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .padding()
-                        
-                        Button(action: {
-                            bluetoothManager.sendData(dataToSend)
-                            }) {
-                            Text("Send Data")
-                                .foregroundColor(.blue)
-                        }
-                        .padding()
-                    }// VStack with textField sender data
-                    
                     
                     if bluetoothManager.isConnected
                     {
@@ -62,7 +48,7 @@ struct DeviceControllerView: View
                     
                     Button
                     {
-                        if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                        if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.macAddress == device.macAddress })
                         {
                             let peripheral = bluetoothManager.peripherals[index]
                             bluetoothManager.connect(to: peripheral)
@@ -97,7 +83,7 @@ struct DeviceControllerView: View
                     .frame(width: 50, height: 50)
                     .foregroundColor(Color.red)
                 
-                Text("\(device.1) наразі недоступний бо відсутній Bluetooth")
+                Text("\(device.name) наразі недоступний бо відсутній Bluetooth")
                     .font(.body.bold())
                     .frame(maxWidth: .infinity, alignment: .center)
 
@@ -127,12 +113,31 @@ struct DeviceControllerView: View
             }
         }// main VStack
         .padding()
-        .navigationTitle(device.1)
+        .navigationTitle(device.name)
+        .toolbar
+        {
+            ToolbarItemGroup(placement: .destructiveAction)
+            {
+                Button
+                {
+                    isShowSetting.toggle()
+                }
+                label:
+                {
+                    Image(systemName: "gearshape")
+                }
+                .help("Відкрити налаштування")
+            }
+        }
+        .sheet(isPresented: $isShowSetting)
+        {
+            SettingDeviceView(bluetoothManager: bluetoothManager, isShowWindow: $isShowSetting, device: device)
+        }
         .onAppear
         {
             if bluetoothManager.bluetoothEnabled
             {
-                if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.name == device.name })
                 {
                     let peripheral = bluetoothManager.peripherals[index]
                     bluetoothManager.connect(to: peripheral)

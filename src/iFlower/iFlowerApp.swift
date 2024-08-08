@@ -17,12 +17,5 @@ struct iFlowerApp: App
             ContentView()
         }// main Window Group
         .windowStyle(DefaultWindowStyle())
-
-        
-        // maybe delete
-        Window("Пошук Bluetooth пристроїв", id: "BluetoothWindow")
-        {
-            //BluetoothConnectView(bluetoothManager: bluetoothManager)
-        }// window for search bluetooth device
     }// body
 }

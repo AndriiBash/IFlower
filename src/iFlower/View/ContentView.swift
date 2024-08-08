@@ -54,21 +54,11 @@ struct ContentView: View
                         
                         NavigationLink(destination: DeviceControllerView(device: device, bluetoothManager: bluetoothManager))
                         {
-                            Label(device.1, systemImage: "camera.macro")
+                            Label(device.name, systemImage: "\(device.imageName)")
                         }
-                        .tag(device.1)
+                        .tag(device.name)
                         .contextMenu
-                        {
-                            Button
-                            {
-                                // do something
-                            }
-                            label:
-                            {
-                                Text("Налаштування")
-                                Image(systemName: "gearshape")
-                            }
-                            
+                        {                            
                             Button
                             {
                                 bluetoothManager.removeConnectedDevice(at: index)
@@ -98,5 +88,12 @@ struct ContentView: View
         {
             StartView()
         }
+        .background(
+            Image("mainBG_1")
+                .resizable()
+                .edgesIgnoringSafeArea(.all)
+                .frame(width: NSScreen.main?.frame.width, height: NSScreen.main?.frame.height)
+                .blur(radius: 15)
+        )
     }
 }

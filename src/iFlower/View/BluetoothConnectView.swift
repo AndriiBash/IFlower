@@ -19,21 +19,21 @@ struct BluetoothConnectView: View
         {
             if bluetoothManager.bluetoothEnabled
             {
-                List(bluetoothManager.deviceInfos, id: \.0)
+                List(bluetoothManager.deviceInfos)
                 { device in
                     VStack(alignment: .leading)
                     {
-                        Text("Назва: \(device.1)")
-                        Text("MAC Адреса: \(device.0)")
+                        Text("Назва: \(device.name)")
+                        Text("MAC Адреса: \(device.macAddress)")
                         
                         Button
                         {
-                            if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.0 == device.0 })
+                            if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.macAddress == device.macAddress })
                             {
                                 let peripheral = bluetoothManager.peripherals[index]
                                 bluetoothManager.connect(to: peripheral)
                                 
-                                activeTab = "\(device.1)"
+                                activeTab = "\(device.name)"
                                 print("\(activeTab)")
                             }
                         }
@@ -42,10 +42,10 @@ struct BluetoothConnectView: View
                             Text("Додати")
                                 .foregroundColor(.blue)
                         }
-                    }
+                    }// VStack with card device for connecting
                     .padding()
-                }
-                
+                }// List bluetooth device Infos
+
                 VStack
                 {
                     if buttonIsClicked
@@ -128,5 +128,6 @@ struct BluetoothConnectView: View
             }
         }
         .navigationTitle("Bluetooth пристрої")
+        .background(Color("SecondBGColor"))
     }
 }

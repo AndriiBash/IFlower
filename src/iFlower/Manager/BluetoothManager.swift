@@ -11,8 +11,8 @@ import CoreBluetooth
 class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeripheralDelegate
 {
     var centralManager: CBCentralManager!
-    @Published var deviceInfos: [(String, String)] = []
-    @Published var connectedDevices: [(String, String)] = [] {
+    @Published var deviceInfos: [DeviceStruct] = []
+    @Published var connectedDevices: [DeviceStruct] = [] {
         didSet {
             saveConnectedDevices()
         }
@@ -100,12 +100,14 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     {
         let name = peripheral.name ?? "Unknown"
         let macAddress = peripheral.identifier.uuidString
-
+        let imageName = "camera.macro"
+        
         discoveredDeviceSet.insert(macAddress)
 
-        if !deviceInfos.contains(where: { $0.0 == macAddress })
+        if !deviceInfos.contains(where: { $0.macAddress == macAddress }) 
         {
-            deviceInfos.append((macAddress, name))
+            let device = DeviceStruct(name: name, macAddress: macAddress, imageName: imageName)
+            deviceInfos.append(device)
             peripherals.append(peripheral)
             print("Discovered device: \(name) with MAC: \(macAddress)")
         }
@@ -132,12 +134,14 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
             isConnected = true
         }
         
-        let deviceInfo = (peripheral.identifier.uuidString, peripheral.name ?? "Unknown")
-        
-        if !connectedDevices.contains(where: { $0.0 == deviceInfo.0 })
+        let imageName = "camera.macro"
+        let deviceInfo = DeviceStruct(name: peripheral.name ?? "Unknown", macAddress: peripheral.identifier.uuidString, imageName: imageName)
+
+        if !connectedDevices.contains(where: { $0.macAddress == deviceInfo.macAddress }) 
         {
             connectedDevices.append(deviceInfo)
         }
+        
         peripheral.discoverServices(nil)
         isScanning = false
     }// func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral)
@@ -233,19 +237,25 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     
     func saveConnectedDevices()
     {
-        let deviceDictArray = connectedDevices.map { ["id": $0.0, "name": $0.1] }
+        let deviceDictArray = connectedDevices.map { ["id": $0.macAddress, "name": $0.name, "imageName": $0.imageName] }
         UserDefaults.standard.set(deviceDictArray, forKey: "connectedDevices")
     }// func saveConnectedDevices()
 
     
+    func getConnectedDevices() -> [[String: String]]
+    {
+        return UserDefaults.standard.array(forKey: "connectedDevices") as? [[String: String]] ?? []
+    }// func getConnectedDevices() -> [[String: String]]
+
+    
     func loadConnectedDevices()
     {
-        if let deviceDictArray = UserDefaults.standard.array(forKey: "connectedDevices") as? [[String: String]]
+        if let deviceDictArray = UserDefaults.standard.array(forKey: "connectedDevices") as? [[String: String]] 
         {
-            connectedDevices = deviceDictArray.compactMap
+            connectedDevices = deviceDictArray.compactMap 
             {
-                guard let id = $0["id"], let name = $0["name"] else { return nil }
-                return (id, name)
+                guard let id = $0["id"], let name = $0["name"], let imageName = $0["imageName"] else { return nil }
+                return DeviceStruct(name: name, macAddress: id, imageName: imageName)
             }
         }
     }// func loadConnectedDevices()
@@ -253,13 +263,13 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     
     func removeConnectedDevice(at index: Int)
     {
-        guard index >= 0 && index < connectedDevices.count else
-        {
+        guard index >= 0 && index < connectedDevices.count else {
             return
         }
         
         let deviceToRemove = connectedDevices[index]
-        if let peripheral = peripherals.first(where: { $0.identifier.uuidString == deviceToRemove.0 })
+        
+        if let peripheral = peripherals.first(where: { $0.identifier.uuidString == deviceToRemove.macAddress })
         {
             centralManager.cancelPeripheralConnection(peripheral)
         }
@@ -269,20 +279,43 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     
     func updateDeviceList()
     {
-        let currentConnectedDevices = Set(connectedDevices.map { $0.0 })
-        let discoveredDevices = Set(deviceInfos.map { $0.0 })
+        let currentConnectedDevices = Set(connectedDevices.map { $0.macAddress })
+        let discoveredDevices = Set(deviceInfos.map { $0.macAddress })
 
         // Find devices that are no longer discovered
         let missingDevices = currentConnectedDevices.subtracting(discoveredDevices)
 
         // Remove missing devices from connectedDevices and deviceInfos
-        if (!missingDevices.isEmpty)
-        {
-            deviceInfos.removeAll { missingDevices.contains($0.0) }
+        if !missingDevices.isEmpty {
+            deviceInfos.removeAll { missingDevices.contains($0.macAddress) }
             peripherals.removeAll { missingDevices.contains($0.identifier.uuidString) }
             print("Removed devices: \(missingDevices)")
         }
 
         discoveredDeviceSet.removeAll()
     }// func updateDeviceList()
+    
+    
+    func saveDeviceSettings(for device: DeviceStruct, newName: String, imageName: String)
+    {
+        var deviceDictArray = getConnectedDevices()
+        
+        // search index device
+        if let index = deviceDictArray.firstIndex(where: { $0["id"] == device.macAddress })
+        {
+            deviceDictArray[index]["name"] = newName
+            deviceDictArray[index]["imageName"] = imageName
+        }
+        else
+        {
+            // if no device, return
+            print("Device with this mac address was not found")
+            return
+        }
+        
+        // save to UserDefaults
+        UserDefaults.standard.set(deviceDictArray, forKey: "connectedDevices")
+        loadConnectedDevices()
+    }
+
 }// class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CBPeripheralDelegate
