@@ -100,13 +100,14 @@ struct BluetoothConnectView: View
                 
                 Text("Bluetooth наразі недоступний")
                     .font(.body.bold())
+                    .foregroundColor(Color.primary)
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 HStack(spacing: 4)
                 {
                     Text("Скоріш за всього в налаштуваннях потрібно включити bluetooth, як це зробити")
                         .font(.callout)
-                        .foregroundColor(Color.gray)
+                        .foregroundColor(Color.secondary)
                         .frame(alignment: .center)
                     
                     Button
@@ -128,6 +129,6 @@ struct BluetoothConnectView: View
             }
         }
         .navigationTitle("Bluetooth пристрої")
-        .background(Color("SecondBGColor"))
+        .background(bluetoothManager.bluetoothEnabled ? Color("SecondBGColor") : Color.clear)
     }
 }

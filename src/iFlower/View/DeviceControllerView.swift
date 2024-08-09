@@ -23,56 +23,74 @@ struct DeviceControllerView: View
             {
                 if bluetoothManager.isConnected
                 {
-                    Text("Device Name: \(device.name)")
-                    Text("Device Address: \(device.macAddress)")
-                    
-                    HStack
+                    ScrollView
                     {
-                        Text("Вологість ґрунту: ")
-                        Text(bluetoothManager.receivedData)
-                            .foregroundColor(.blue)
-                        Text("%")
-                    }// HStack Received
-                    
-                    if bluetoothManager.isConnected
-                    {
-                        Text("connect")
-                            .foregroundColor(Color.green)
-                    }
-                    else
-                    {
-                        Text("NOT connect")
-                            .foregroundColor(Color.red)
-                    }
-                    
-                    
-                    Button
-                    {
-                        if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.macAddress == device.macAddress })
+                        ScrollView(.horizontal, showsIndicators: false)
                         {
-                            let peripheral = bluetoothManager.peripherals[index]
-                            bluetoothManager.connect(to: peripheral)
+                            RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: bluetoothManager.receivedData + "%", colorImage: Color.blue)
+                                .padding()
+                        }// ScrollView with the main information iFlower device
+                        .padding(.top, 12)
+
+                        Spacer()
+                        
+                        Text("Device Name: \(device.name)")
+                        Text("Device Address: \(device.macAddress)")
+                        
+                        HStack
+                        {
+                            Text("Вологість ґрунту: ")
+                            Text(bluetoothManager.receivedData)
+                                .foregroundColor(.blue)
+                            Text("%")
+                        }// HStack Received
+                        
+                        if bluetoothManager.isConnected
+                        {
+                            Text("connect")
+                                .foregroundColor(Color.green)
                         }
-                    }
-                    label:
-                    {
-                        Text("Сonnect!")
-                    }
-                    
-                    Button
-                    {
-                        bluetoothManager.disconnectFromPeripheral()
-                    }
-                    label:
-                    {
-                        Text("DISCONNECT!")
-                    }
+                        else
+                        {
+                            Text("NOT connect")
+                                .foregroundColor(Color.red)
+                        }
+                        
+                        
+                        Button
+                        {
+                            if let index = bluetoothManager.deviceInfos.firstIndex(where: { $0.macAddress == device.macAddress })
+                            {
+                                let peripheral = bluetoothManager.peripherals[index]
+                                bluetoothManager.connect(to: peripheral)
+                            }
+                        }
+                        label:
+                        {
+                            Text("Сonnect!")
+                        }
+                        
+                        Button
+                        {
+                            bluetoothManager.disconnectFromPeripheral()
+                        }
+                        label:
+                        {
+                            Text("DISCONNECT!")
+                        }
+                    }// ScrollView with main info
                 }// if process connecting
                 else
                 {
-                    ProgressView("Connecting...")
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .padding()
+                    ZStack
+                    {
+                        Color("MainBlurBGColor").opacity(0.25)
+                        
+                        ProgressView("Під'єднання...")
+                    }// ZStack with loading
+                    .frame(width: 150, height: 150)
+                    .cornerRadius(25)
+                    .shadow(radius: 10)
                 }
             }
             else
@@ -85,13 +103,14 @@ struct DeviceControllerView: View
                 
                 Text("\(device.name) наразі недоступний бо відсутній Bluetooth")
                     .font(.body.bold())
+                    .foregroundColor(Color.primary)
                     .frame(maxWidth: .infinity, alignment: .center)
 
                 HStack(spacing: 4)
                 {
                     Text("Скоріш за всього в налаштуваннях потрібно включити bluetooth, як це зробити")
                         .font(.callout)
-                        .foregroundColor(Color.gray)
+                        .foregroundColor(Color.secondary)
                         .frame(alignment: .center)
                     
                     Button
@@ -112,7 +131,6 @@ struct DeviceControllerView: View
                 }// HStack with text for open bluetooth help
             }
         }// main VStack
-        .padding()
         .navigationTitle(device.name)
         .toolbar
         {

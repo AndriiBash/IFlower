@@ -116,6 +116,7 @@ struct SettingDeviceView: View
                 .background(Color.clear)
                 .formStyle(.grouped)
             }// Main VStack
+            .frame(width: 400, height: 600)
         }// NavigationView
         .frame(width: 400, height: 600)
         .onAppear

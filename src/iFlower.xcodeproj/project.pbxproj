@@ -11,6 +11,8 @@
 		B55B8A432C639E0B00F9E916 /* SettingDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A422C639E0B00F9E916 /* SettingDeviceView.swift */; };
 		B55B8A452C64DF5E00F9E916 /* BlurBehindWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A442C64DF5E00F9E916 /* BlurBehindWindow.swift */; };
 		B55B8A482C64EE8000F9E916 /* DeviceStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A472C64EE8000F9E916 /* DeviceStruct.swift */; };
+		B55B8A4B2C66803700F9E916 /* RowDeviceInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A4A2C66803700F9E916 /* RowDeviceInfoViewModel.swift */; };
+		B55B8A4D2C6688B400F9E916 /* iFlowerStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A4C2C6688B400F9E916 /* iFlowerStruct.swift */; };
 		B57882362C3AE34400F00AC5 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57882352C3AE34400F00AC5 /* StartView.swift */; };
 		B57882382C3AEA1600F00AC5 /* RowStartInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57882372C3AEA1600F00AC5 /* RowStartInfoViewModel.swift */; };
 		B5F653992C2B075F0097EFBA /* iFlowerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F653982C2B075F0097EFBA /* iFlowerApp.swift */; };
@@ -26,6 +28,8 @@
 		B55B8A422C639E0B00F9E916 /* SettingDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingDeviceView.swift; sourceTree = "<group>"; };
 		B55B8A442C64DF5E00F9E916 /* BlurBehindWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurBehindWindow.swift; sourceTree = "<group>"; };
 		B55B8A472C64EE8000F9E916 /* DeviceStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceStruct.swift; sourceTree = "<group>"; };
+		B55B8A4A2C66803700F9E916 /* RowDeviceInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowDeviceInfoViewModel.swift; sourceTree = "<group>"; };
+		B55B8A4C2C6688B400F9E916 /* iFlowerStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iFlowerStruct.swift; sourceTree = "<group>"; };
 		B57882352C3AE34400F00AC5 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StartView.swift; path = iFlower/View/StartView.swift; sourceTree = SOURCE_ROOT; };
 		B57882372C3AEA1600F00AC5 /* RowStartInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowStartInfoViewModel.swift; sourceTree = "<group>"; };
 		B5F653952C2B075F0097EFBA /* iFlower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iFlower.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				B55B8A472C64EE8000F9E916 /* DeviceStruct.swift */,
+				B55B8A4C2C6688B400F9E916 /* iFlowerStruct.swift */,
 			);
 			path = ObjectStruct;
 			sourceTree = "<group>";
@@ -69,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				B57882372C3AEA1600F00AC5 /* RowStartInfoViewModel.swift */,
+				B55B8A4A2C66803700F9E916 /* RowDeviceInfoViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -205,11 +211,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5F653AC2C2B080E0097EFBA /* BluetoothConnectView.swift in Sources */,
+				B55B8A4B2C66803700F9E916 /* RowDeviceInfoViewModel.swift in Sources */,
 				B57882362C3AE34400F00AC5 /* StartView.swift in Sources */,
 				B55B8A452C64DF5E00F9E916 /* BlurBehindWindow.swift in Sources */,
 				B57882382C3AEA1600F00AC5 /* RowStartInfoViewModel.swift in Sources */,
 				B55B8A482C64EE8000F9E916 /* DeviceStruct.swift in Sources */,
 				B55B8A432C639E0B00F9E916 /* SettingDeviceView.swift in Sources */,
+				B55B8A4D2C6688B400F9E916 /* iFlowerStruct.swift in Sources */,
 				B5F6539B2C2B075F0097EFBA /* ContentView.swift in Sources */,
 				B5F653AA2C2B07F70097EFBA /* BluetoothManager.swift in Sources */,
 				B5F653992C2B075F0097EFBA /* iFlowerApp.swift in Sources */,

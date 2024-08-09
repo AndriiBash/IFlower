@@ -21,7 +21,8 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     @Published var bluetoothEnabled: Bool = false
     @Published var isConnected: Bool = false
     @Published var receivedData: String = ""
-
+    @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0)
+    
     var peripherals: [CBPeripheral] = []
     var connectedPeripheral: CBPeripheral?
     var targetCharacteristic: CBCharacteristic?
@@ -33,6 +34,7 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     {
         super.init()
         centralManager = CBCentralManager(delegate: self, queue: nil)
+
         loadConnectedDevices()
     }// override init()
 
@@ -200,13 +202,16 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
             return
         }
         
-        guard let characteristicValue = characteristic.value else 
+        guard let characteristicValue = characteristic.value else
         {
             print("Characteristic value is nil")
             return
         }
         
-        if let receivedString = String(data: characteristicValue, encoding: .utf8) 
+        
+        // MARK: - NEED USE iFlowerMainDevice!!!!
+        
+        if let receivedString = String(data: characteristicValue, encoding: .utf8)
         {
             DispatchQueue.main.async
             {
