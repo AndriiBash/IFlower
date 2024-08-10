@@ -9,8 +9,8 @@ import Foundation
 
 struct iFlowerDevice
 {
-    var soilMoisture: Double // Волога ґрунту у відцотках
-    var airTemperature: Double // Температура повітря навколо рослини в градусах
-    var airHumidity: Double // Вологість повітря у відсотках
-    var lightLevel: Double // Рівень освітлення у люменах
+    var soilMoisture: Int // Волога ґрунту у відцотках
+    var airTemperature: Int // Температура повітря навколо рослини в градусах
+    var airHumidity: Int // Вологість повітря у відсотках
+    var lightLevel: Int // Рівень освітлення у люменах
 }

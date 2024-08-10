@@ -29,6 +29,9 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     var scanTimer: Timer?
     var discoveredDeviceSet: Set<String> = []
 
+    // template
+    var accumulatedData = Data()
+
     
     override init()
     {
@@ -208,23 +211,65 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
             return
         }
         
-        
-        // MARK: - NEED USE iFlowerMainDevice!!!!
-        
-        if let receivedString = String(data: characteristicValue, encoding: .utf8)
+        accumulatedData.append(characteristicValue)
+            
+        // Converting data into a table
+        if let dataString = String(data: accumulatedData, encoding: .utf8)
         {
-            DispatchQueue.main.async
+            // Checking for the presence of a line separator
+            var newAccumulatedData = Data()
+            var lastIndex = dataString.startIndex
+                
+            while let range = dataString.range(of: "\n", range: lastIndex..<dataString.endIndex)
             {
-                self.receivedData = receivedString
+                let jsonString = String(dataString[lastIndex..<range.lowerBound])
+                lastIndex = range.upperBound
+                
+                // Processing the JSON string
+                processJSON(jsonString)
             }
-            print("Received data: \(receivedString)")
-        } 
-        else
-        {
-            print("Failed to convert data to string")
+                
+            // save last data
+            if lastIndex < dataString.endIndex
+            {
+                let remainingString = String(dataString[lastIndex..<dataString.endIndex])
+                newAccumulatedData = remainingString.data(using: .utf8) ?? Data()
+            }
+            
+            accumulatedData = newAccumulatedData
         }
     }// func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?)
 
+    
+    func processJSON(_ jsonString: String) 
+    {
+        do 
+        {
+            if let jsonData = jsonString.data(using: .utf8),
+               let jsonObject = try JSONSerialization.jsonObject(with: jsonData, options: []) as? [String: Any] 
+            {
+                if let soilMoisture = jsonObject["soilMoisture"] as? Int,
+                   let airHumidity = jsonObject["airHumidity"] as? Int,
+                   let lightLevel = jsonObject["lightLevel"] as? Int,
+                   let airTemperature = jsonObject["airTemperature"] as? Int 
+                {
+                    DispatchQueue.main.async 
+                    {
+                        self.iFlowerMainDevice.soilMoisture = soilMoisture
+                        self.iFlowerMainDevice.airHumidity = airHumidity
+                        self.iFlowerMainDevice.lightLevel = lightLevel
+                        self.iFlowerMainDevice.airTemperature = airTemperature
+                    }
+                    print("Received data: \(jsonObject)")
+                }
+            }
+        } 
+        catch
+        {
+            print("JSON parsing error: \(error.localizedDescription)")
+        }
+    }// func processJSON(_ jsonString: String)
+    
     
     func sendData(_ data: String)
     {

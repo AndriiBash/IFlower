@@ -12,8 +12,10 @@ struct DeviceControllerView: View
     var device: DeviceStruct
     @ObservedObject var bluetoothManager: BluetoothManager
     
-    @State private var isShowSetting: Bool = false
-    
+    @State private var isShowSetting:               Bool = false
+    @State private var isShowDeviceSensor:          Bool = false
+    @State private var scrollViewSensorHeight:      CGFloat = 0
+
     
     var body: some View
     {
@@ -25,13 +27,50 @@ struct DeviceControllerView: View
                 {
                     ScrollView
                     {
+                        HStack
+                        {
+                            Button
+                            {
+                                withAnimation(Animation.easeInOut(duration: 0.2))
+                                {
+                                    self.isShowDeviceSensor.toggle()
+                                    scrollViewSensorHeight = isShowDeviceSensor ? 65 : 0
+                                }
+                            }
+                            label:
+                            {
+                                Text("Сенсори")
+                                    .foregroundColor(Color.primary)
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 15, height: 15, alignment: .center)
+                                    .foregroundColor(Color.primary)
+                                    .rotationEffect(.degrees(isShowDeviceSensor ? 90 : 0)) // Поворачиваем на 90 градусов
+                                    .animation(.easeInOut(duration: 0.2), value: isShowDeviceSensor) // Добавляем анимацию
+                            }// Button for show and hide info from sensor
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.top)
+                            .padding(.leading)
+                            
+                            Spacer()
+                        }//HStack with button for open or close scrollView
+                        
                         ScrollView(.horizontal, showsIndicators: false)
                         {
-                            RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: bluetoothManager.receivedData + "%", colorImage: Color.blue)
-                                .padding()
-                        }// ScrollView with the main information iFlower device
-                        .padding(.top, 12)
+                            LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
+                            {
+                                RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: String(bluetoothManager.iFlowerMainDevice.soilMoisture) + "%", colorImage: Color.blue)
 
+                                RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: bluetoothManager.receivedData + "%", colorImage: Color.blue)
+                            }
+                            .padding()
+                        }// ScrollView with the main information iFlower device
+                        .frame(height: scrollViewSensorHeight)
+                        
                         Spacer()
                         
                         Text("Device Name: \(device.name)")
@@ -55,7 +94,6 @@ struct DeviceControllerView: View
                             Text("NOT connect")
                                 .foregroundColor(Color.red)
                         }
-                        
                         
                         Button
                         {

@@ -42,7 +42,8 @@ struct RowDeviceInfoViewModel: View
             }// Main HStack
             .padding(10)
         }// ZStack with info
+        .frame(maxHeight: 60)
         .cornerRadius(20)
-        .shadow(radius: 10)
+        .shadow(radius: 5)
     }
 }
