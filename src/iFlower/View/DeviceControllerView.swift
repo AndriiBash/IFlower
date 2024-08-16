@@ -13,9 +13,11 @@ struct DeviceControllerView: View
     @ObservedObject var bluetoothManager: BluetoothManager
     
     @State private var isShowSetting:               Bool = false
-    @State private var isShowDeviceSensor:          Bool = false
-    @State private var scrollViewSensorHeight:      CGFloat = 0
-
+    @State private var isShowDeviceSensor:          Bool = true
+    @State private var isShowDeviceInfo:            Bool = true
+    
+    @State private var scrollViewSensorHeight:      CGFloat = 65
+    @State private var scrollViewInfoHeight:        CGFloat = 120
     
     var body: some View
     {
@@ -27,6 +29,83 @@ struct DeviceControllerView: View
                 {
                     ScrollView
                     {
+                        HStack
+                        {
+                            Button
+                            {
+                                withAnimation(Animation.easeInOut(duration: 0.2))
+                                {
+                                    self.isShowDeviceInfo.toggle()
+                                    scrollViewInfoHeight = isShowDeviceInfo ? 120 : 0
+                                }
+                            }
+                            label:
+                            {
+                                Text("Про девайс")
+                                    .foregroundColor(Color.primary)
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 15, height: 15, alignment: .center)
+                                    .foregroundColor(Color.primary)
+                                    .rotationEffect(.degrees(isShowDeviceInfo ? 90 : 0))
+                                    .animation(.easeInOut(duration: 0.2), value: isShowDeviceInfo)
+                            }// Button for show and hide info from sensor
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.top)
+                            .padding(.leading)
+                            
+                            Spacer()
+                        }//HStack with button for open or close scrollView with info about device
+                        
+                        ScrollView(.horizontal, showsIndicators: false)
+                        {
+                            LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
+                            {
+                                ZStack
+                                {
+                                    Color("MainBlurBGColor").opacity(0.25)
+                                    
+                                    HStack
+                                    {
+                                        Image(systemName: "info.circle")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(Color.blue)
+                                        
+                                        VStack(alignment: .leading)
+                                        {
+                                            Text(device.name)
+                                                .font(.headline)
+                                                .fontWeight(.semibold)
+                                                .foregroundColor(Color.primary)
+
+                                            Text("Версія прошивки: " + bluetoothManager.iFlowerMainDevice.versionFirmware)
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                            
+                                            Text("s/n. " + bluetoothManager.iFlowerMainDevice.serialNumber)
+                                                .font(.subheadline)
+                                                .foregroundColor(.secondary)
+                                        }// VStack with detail info
+                                        .padding(.leading, 2)
+                                    }// Main HStack
+                                    .padding(10)
+                                    .padding(.vertical, 40)
+                                }// ZStack with info
+                                .frame(maxHeight: 120)
+                                .cornerRadius(20)
+                                .shadow(radius: 5)
+                            }// LazyHGrid
+                            .padding()
+                        }// ScrollView with the main information iFlower device
+                        .frame(height: scrollViewInfoHeight)
+                        
+                        
                         HStack
                         {
                             Button
@@ -57,7 +136,7 @@ struct DeviceControllerView: View
                             .padding(.leading)
                             
                             Spacer()
-                        }//HStack with button for open or close scrollView
+                        }//HStack with button for open or close scrollView with info from sensor's
                         
                         ScrollView(.horizontal, showsIndicators: false)
                         {
@@ -68,7 +147,7 @@ struct DeviceControllerView: View
                                 RowDeviceInfoViewModel(imageName: "thermometer.medium", mainText: "Температура", bodyText: String(bluetoothManager.iFlowerMainDevice.airTemperature) + "°C", colorImage: Color.blue)
                                 
                                 RowDeviceInfoViewModel(imageName: "humidity", mainText: "Волога повітря", bodyText: String(bluetoothManager.iFlowerMainDevice.airHumidity) + "%", colorImage: Color.blue)
-                            }
+                            }// LazyHGrid
                             .padding()
                         }// ScrollView with the main information iFlower device
                         .frame(height: scrollViewSensorHeight)
