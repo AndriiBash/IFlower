@@ -6,9 +6,8 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
-// const value seriaul bate and led pin
+// const value seriaul bate
 const unsigned long SERIAL_BAUD_RATE = 9600;
-const int ledPin = 13;     
 
 // value for Moisture Sensor v1.2
 const int dry = 510; // value for dry sensor
@@ -21,6 +20,10 @@ const int wet = 210; // value for wet sensor
 
 // obj dht sensor
 DHT_Unified dht(DHTPIN, DHTTYPE);
+
+// Pin's
+#define RELAY_PIN 50
+#define LED_PIN 13     
 
 // Serial number and verison firmware
 #define serialNumber "0000-0000-0000-0001"
@@ -35,14 +38,11 @@ void setup()
   BT.begin(SERIAL_BAUD_RATE);
 
   // init pinMode
-  pinMode(ledPin, OUTPUT);     
-
-  // init power supply with electricity module 
-  //pinMode(53, OUTPUT); 
-  //digitalWrite(53, HIGH);
+  pinMode(LED_PIN, OUTPUT);   
+  pinMode(RELAY_PIN, OUTPUT);  
+  digitalWrite(RELAY_PIN, HIGH);
 
   dht.begin();
-
 
   // wait 2 saecond for init
   delay(2000);
@@ -58,14 +58,8 @@ void loop()
   int airTemperature = 0;
   int airHumidity = 0;
 
-  //Serial.print(percentageHumididy);
-  //Serial.println("%");
-
   sensors_event_t event;
   dht.temperature().getEvent(&event);
-
-  //float humidity = dht.readHumidity();
-  //float temperature = dht.readTemperature();
 
   // get temperature
   if (isnan(event.temperature))
@@ -77,7 +71,6 @@ void loop()
     airTemperature = round(event.temperature);
   }
 
-  
   dht.humidity().getEvent(&event);
 
   // get humidity
@@ -103,12 +96,14 @@ void loop()
 
       if (c == '1')
       {
-        digitalWrite(ledPin, HIGH);
+        digitalWrite(LED_PIN, HIGH);
+        digitalWrite(RELAY_PIN, LOW);
       }
       
       if (c == '0')
       {
-        digitalWrite(ledPin, LOW);
+        digitalWrite(LED_PIN, LOW);
+        digitalWrite(RELAY_PIN, HIGH);
       }
     }
   }
@@ -129,7 +124,6 @@ void loop()
 
 void sendSensorData(int soilMoisture, int airTemperature, int airHumidity) 
 {
-  // сreate and send JSON
   if (BT) 
   {
     // Create JSON object
