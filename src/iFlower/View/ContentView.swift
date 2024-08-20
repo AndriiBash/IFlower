@@ -62,6 +62,7 @@ struct ContentView: View
                             Button
                             {
                                 bluetoothManager.removeConnectedDevice(at: index)
+                                activeTab = "Bluetooth сканер"
                             }
                             label:
                             {

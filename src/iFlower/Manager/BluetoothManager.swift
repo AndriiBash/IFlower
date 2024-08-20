@@ -257,7 +257,7 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                    let lightLevel = jsonObject["lightLevel"] as? Int,
                    let airTemperature = jsonObject["airTemperature"] as? Int
                 {
-                    DispatchQueue.main.async 
+                    DispatchQueue.main.async
                     {
                         self.iFlowerMainDevice.serialNumber     = serialNumber
                         self.iFlowerMainDevice.versionFirmware  = versionFirmware
@@ -266,6 +266,7 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                         self.iFlowerMainDevice.airHumidity      = airHumidity
                         self.iFlowerMainDevice.lightLevel       = lightLevel
                         self.iFlowerMainDevice.airTemperature   = airTemperature
+                        self.iFlowerMainDevice.lightLevel       = lightLevel
                     }
                     print("Received data: \(jsonObject)")
                 }

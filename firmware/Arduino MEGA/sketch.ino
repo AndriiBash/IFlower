@@ -15,19 +15,20 @@ const int wet = 210; // value for wet sensor
 
 #define BT Serial3 // Bluetooth serial
 
-#define DHTPIN 52     // pin where include DH11 sensor for get data
 #define DHTTYPE DHT11 //DH11 Version sensor
 
-// obj dht sensor
-DHT_Unified dht(DHTPIN, DHTTYPE);
-
 // Pin's
-#define RELAY_PIN 50
-#define LED_PIN 13     
+#define DHT_PIN 52            // pin where include DH11 sensor for get data
+#define RELAY_PIN 50          // pin where realy
+#define LED_PIN 13            // pin led
+#define PIN_PHOTO_SENSOR A5   // pin where photo sensor (analog in)
+
+// obj dht sensor
+DHT_Unified dht(DHT_PIN, DHTTYPE);
 
 // Serial number and verison firmware
 #define serialNumber "0000-0000-0000-0001"
-#define versionFirmware "0.1"
+#define versionFirmware "0.25b"
 
 
 void setup() 
@@ -54,6 +55,8 @@ void loop()
 {
   int moistureSensorValue = analogRead(A0);
   int percentageHumididy = map(moistureSensorValue, wet, dry, 100, 0);
+
+  int lightSensorValue = ((1000 - analogRead(PIN_PHOTO_SENSOR)) / 1000.0) * 1000.0;
 
   int airTemperature = 0;
   int airHumidity = 0;
@@ -83,7 +86,7 @@ void loop()
     airHumidity = round(event.relative_humidity);
   }
 
-  sendSensorData(percentageHumididy, airTemperature, airHumidity);
+  sendSensorData(percentageHumididy, airTemperature, airHumidity, lightSensorValue);
 
   // сheck data from Bluetooth module and send to Serial Monitor for get command
   if (BT.available()) 
@@ -122,7 +125,7 @@ void loop()
 }// void loop() 
 
 
-void sendSensorData(int soilMoisture, int airTemperature, int airHumidity) 
+void sendSensorData(int soilMoisture, int airTemperature, int airHumidity, int lightLevel) 
 {
   if (BT) 
   {
@@ -137,7 +140,7 @@ void sendSensorData(int soilMoisture, int airTemperature, int airHumidity)
     jsonData["soilMoisture"] = soilMoisture;
     jsonData["airHumidity"] = airHumidity;
     jsonData["airTemperature"] = airTemperature;
-    jsonData["lightLevel"] = 0;//lightLevel;
+    jsonData["lightLevel"] = lightLevel;
 
     // Converting a JSON object to text
     String jsonString = JSON.stringify(jsonData);

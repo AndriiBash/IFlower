@@ -147,6 +147,8 @@ struct DeviceControllerView: View
                                 RowDeviceInfoViewModel(imageName: "thermometer.medium", mainText: "Температура", bodyText: String(bluetoothManager.iFlowerMainDevice.airTemperature) + "°C", colorImage: Color.blue)
                                 
                                 RowDeviceInfoViewModel(imageName: "humidity", mainText: "Волога повітря", bodyText: String(bluetoothManager.iFlowerMainDevice.airHumidity) + "%", colorImage: Color.blue)
+                                
+                                RowDeviceInfoViewModel(imageName: "lightbulb", mainText: "Світловий поток", bodyText: String(bluetoothManager.iFlowerMainDevice.lightLevel) + " Люменів", colorImage: Color.blue)
                             }// LazyHGrid
                             .padding()
                         }// ScrollView with the main information iFlower device
