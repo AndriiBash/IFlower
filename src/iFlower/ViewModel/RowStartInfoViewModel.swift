@@ -22,7 +22,7 @@ struct RowStartInfoViewModel: View
         {
             Image(systemName: imageName)
                 .resizable()
-                .foregroundColor(Color.blue)
+                .foregroundColor(Color.accentColor)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 35, height: 35, alignment: .center)
                 .symbolEffect(.bounce, value: startAnimate)

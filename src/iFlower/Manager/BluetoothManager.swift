@@ -22,7 +22,7 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     @Published var bluetoothEnabled: Bool = false
     @Published var isConnected: Bool = false
     @Published var receivedData: String = ""
-    @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(versionFirmware: "0.0", serialNumber: "0000-0000-0000-0000", soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0)
+    @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(versionFirmware: "0.0", serialNumber: "0000-0000-0000-0000", soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0, isWatering: false)
     
     var peripherals: [CBPeripheral] = []
     var connectedPeripheral: CBPeripheral?
@@ -257,17 +257,17 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                    let lightLevel = jsonObject["lightLevel"] as? Int,
                    let airTemperature = jsonObject["airTemperature"] as? Int
                 {
-                    DispatchQueue.main.async
-                    {
-                        self.iFlowerMainDevice.serialNumber     = serialNumber
-                        self.iFlowerMainDevice.versionFirmware  = versionFirmware
+                    //DispatchQueue.main.async
+                    
+                    self.iFlowerMainDevice.serialNumber     = serialNumber
+                    self.iFlowerMainDevice.versionFirmware  = versionFirmware
 
-                        self.iFlowerMainDevice.soilMoisture     = soilMoisture
-                        self.iFlowerMainDevice.airHumidity      = airHumidity
-                        self.iFlowerMainDevice.lightLevel       = lightLevel
-                        self.iFlowerMainDevice.airTemperature   = airTemperature
-                        self.iFlowerMainDevice.lightLevel       = lightLevel
-                    }
+                    self.iFlowerMainDevice.soilMoisture     = soilMoisture
+                    self.iFlowerMainDevice.airHumidity      = airHumidity
+                    self.iFlowerMainDevice.lightLevel       = lightLevel
+                    self.iFlowerMainDevice.airTemperature   = airTemperature
+                    self.iFlowerMainDevice.lightLevel       = lightLevel
+
                     print("Received data: \(jsonObject)")
                 }
             }

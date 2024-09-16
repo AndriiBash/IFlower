@@ -40,7 +40,7 @@ struct BluetoothConnectView: View
                         label:
                         {
                             Text("Додати")
-                                .foregroundColor(.blue)
+                                .foregroundColor(Color.accentColor)
                         }
                     }// VStack with card device for connecting
                     .padding()
@@ -121,7 +121,7 @@ struct BluetoothConnectView: View
                     {
                         Text("[Тиць]")
                             .font(.callout)
-                            .foregroundColor(Color.blue)
+                            .foregroundColor(Color.accentColor)
                             .frame(alignment: .center)
                     }
                     .buttonStyle(PlainButtonStyle())

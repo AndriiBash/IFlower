@@ -26,7 +26,7 @@ struct StartView: View
                 
                 Text("Зустрічайте")
                 Text("iFlower!")
-                    .foregroundColor(.blue)
+                    .foregroundColor(Color.accentColor)
             }// VStack header
             .font(.largeTitle.bold())
             .padding(.top, 18)

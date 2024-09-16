@@ -15,8 +15,10 @@ struct DeviceControllerView: View
     @State private var isShowSetting:               Bool = false
     @State private var isShowDeviceSensor:          Bool = true
     @State private var isShowDeviceInfo:            Bool = true
-    
+    @State private var isShowActions:               Bool = true
+
     @State private var scrollViewSensorHeight:      CGFloat = 65
+    @State private var scrollViewActionsHeight:     CGFloat = 65
     @State private var scrollViewInfoHeight:        CGFloat = 120
     
     var body: some View
@@ -75,7 +77,7 @@ struct DeviceControllerView: View
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .frame(width: 20, height: 20)
-                                            .foregroundColor(Color.blue)
+                                            .foregroundColor(Color.accentColor)
                                         
                                         VStack(alignment: .leading)
                                         {
@@ -104,7 +106,6 @@ struct DeviceControllerView: View
                             .padding()
                         }// ScrollView with the main information iFlower device
                         .frame(height: scrollViewInfoHeight)
-                        
                         
                         HStack
                         {
@@ -142,30 +143,112 @@ struct DeviceControllerView: View
                         {
                             LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
                             {
-                                RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: String(bluetoothManager.iFlowerMainDevice.soilMoisture) + "%", colorImage: Color.blue)
+                                RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: String(bluetoothManager.iFlowerMainDevice.soilMoisture) + "%", colorImage: Color.accentColor)
 
-                                RowDeviceInfoViewModel(imageName: "thermometer.medium", mainText: "Температура", bodyText: String(bluetoothManager.iFlowerMainDevice.airTemperature) + "°C", colorImage: Color.blue)
+                                RowDeviceInfoViewModel(imageName: "thermometer.medium", mainText: "Температура", bodyText: String(bluetoothManager.iFlowerMainDevice.airTemperature) + "°C", colorImage: Color.accentColor)
                                 
-                                RowDeviceInfoViewModel(imageName: "humidity", mainText: "Волога повітря", bodyText: String(bluetoothManager.iFlowerMainDevice.airHumidity) + "%", colorImage: Color.blue)
+                                RowDeviceInfoViewModel(imageName: "humidity", mainText: "Волога повітря", bodyText: String(bluetoothManager.iFlowerMainDevice.airHumidity) + "%", colorImage: Color.accentColor)
                                 
-                                RowDeviceInfoViewModel(imageName: "lightbulb", mainText: "Світловий поток", bodyText: String(bluetoothManager.iFlowerMainDevice.lightLevel) + " Люменів", colorImage: Color.blue)
+                                RowDeviceInfoViewModel(imageName: "lightbulb", mainText: "Світловий поток", bodyText: String(bluetoothManager.iFlowerMainDevice.lightLevel) + " Люменів", colorImage: Color.accentColor)
                             }// LazyHGrid
                             .padding()
-                        }// ScrollView with the main information iFlower device
+                        }// ScrollView with the main information from sensor's
                         .frame(height: scrollViewSensorHeight)
-                        
-                        Spacer()
-                        
-                        Text("Device Name: \(device.name)")
-                        Text("Device Address: \(device.macAddress)")
                         
                         HStack
                         {
-                            Text("Вологість ґрунту: ")
-                            Text(bluetoothManager.receivedData)
-                                .foregroundColor(.blue)
-                            Text("%")
-                        }// HStack Received
+                            Button
+                            {
+                                withAnimation(Animation.easeInOut(duration: 0.2))
+                                {
+                                    self.isShowActions.toggle()
+                                    scrollViewActionsHeight = isShowActions ? 65 : 0
+                                }
+                            }
+                            label:
+                            {
+                                Text("Дії над рослиною")
+                                    .foregroundColor(Color.primary)
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 15, height: 15, alignment: .center)
+                                    .foregroundColor(Color.primary)
+                                    .rotationEffect(.degrees(isShowActions ? 90 : 0))
+                                    .animation(.easeInOut(duration: 0.2), value: isShowActions)
+                            }// Button for show and hide info from sensor
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.top)
+                            .padding(.leading)
+                            
+                            Spacer()
+                        }//HStack with button for open or close scrollView with action's
+                        
+                        ScrollView(.horizontal, showsIndicators: false)
+                        {
+                            LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
+                            {
+                                Button
+                                {
+                                    // добавить проверку на влажность почвы, и в случае большой влаге выдавать ошибку пользователю и не возможностью включить полив, использовать алерт
+                                    withAnimation(Animation.easeInOut(duration: 0.25))
+                                    {
+                                        self.bluetoothManager.iFlowerMainDevice.isWatering.toggle()
+                                    }
+                                    
+                                    if self.bluetoothManager.iFlowerMainDevice.isWatering
+                                    {
+                                        self.bluetoothManager.sendData("1")
+                                    }
+                                    else
+                                    {
+                                        self.bluetoothManager.sendData("0")
+                                    }
+                                }
+                                label:
+                                {
+                                    ZStack
+                                    {
+                                        Color(self.bluetoothManager.iFlowerMainDevice.isWatering ? "MainBGUsedColor" : "MainBlurBGColor").opacity(0.25)
+
+                                        HStack
+                                        {
+                                            Image(systemName: self.bluetoothManager.iFlowerMainDevice.isWatering ? "drop.degreesign" : "drop")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 20, height: 20)
+                                                .foregroundColor(bluetoothManager.iFlowerMainDevice.isWatering ? Color.accentColor : Color.gray)
+                                            
+                                            VStack(alignment: .leading)
+                                            {
+                                                Text(self.bluetoothManager.iFlowerMainDevice.isWatering ? "Виключити полив рослини" : "Включити полив рослини")
+                                                    .font(.headline)
+                                                    .fontWeight(.semibold)
+                                                    .foregroundColor(Color.primary)
+                                                    .padding(.vertical)
+                                            }// VStack with detail info
+                                            .padding(.leading, 2)
+                                        }// Main HStack
+                                        .padding(10)
+                                    }// ZStack with info
+                                    .frame(maxHeight: 60)
+                                    .cornerRadius(20)
+                                    .shadow(radius: 5)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }// LazyHGrid
+                            .padding()
+                        }// ScrollView with the main information iFlower device
+                        .frame(height: scrollViewActionsHeight)
+                        
+                        
+                        Spacer()
+                        
+                        //Text("Device Name: \(device.name)")
+                        //Text("Device Address: \(device.macAddress)")
                         
                         if bluetoothManager.isConnected
                         {
@@ -245,7 +328,7 @@ struct DeviceControllerView: View
                     {
                         Text("[Тиць]")
                             .font(.callout)
-                            .foregroundColor(Color.blue)
+                            .foregroundColor(Color.accentColor)
                             .frame(alignment: .center)
                     }
                     .buttonStyle(PlainButtonStyle())

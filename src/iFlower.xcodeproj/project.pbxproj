@@ -13,6 +13,8 @@
 		B55B8A482C64EE8000F9E916 /* DeviceStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A472C64EE8000F9E916 /* DeviceStruct.swift */; };
 		B55B8A4B2C66803700F9E916 /* RowDeviceInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A4A2C66803700F9E916 /* RowDeviceInfoViewModel.swift */; };
 		B55B8A4D2C6688B400F9E916 /* iFlowerStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A4C2C6688B400F9E916 /* iFlowerStruct.swift */; };
+		B56E6E482C95DAA800AABEFD /* iFlowerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56E6E472C95DAA800AABEFD /* iFlowerTests.swift */; };
+		B56E6E4F2C95DAEC00AABEFD /* BluetoothManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56E6E4E2C95DAEC00AABEFD /* BluetoothManagerTests.swift */; };
 		B57882362C3AE34400F00AC5 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57882352C3AE34400F00AC5 /* StartView.swift */; };
 		B57882382C3AEA1600F00AC5 /* RowStartInfoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57882372C3AEA1600F00AC5 /* RowStartInfoViewModel.swift */; };
 		B5F653992C2B075F0097EFBA /* iFlowerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F653982C2B075F0097EFBA /* iFlowerApp.swift */; };
@@ -23,6 +25,16 @@
 		B5F653AC2C2B080E0097EFBA /* BluetoothConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F653AB2C2B080E0097EFBA /* BluetoothConnectView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B56E6E492C95DAA800AABEFD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B5F6538D2C2B075F0097EFBA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B5F653942C2B075F0097EFBA;
+			remoteInfo = iFlower;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		B5447F6E2C40036C00EDD693 /* DeviceControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceControllerView.swift; sourceTree = "<group>"; };
 		B55B8A422C639E0B00F9E916 /* SettingDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingDeviceView.swift; sourceTree = "<group>"; };
@@ -30,6 +42,9 @@
 		B55B8A472C64EE8000F9E916 /* DeviceStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceStruct.swift; sourceTree = "<group>"; };
 		B55B8A4A2C66803700F9E916 /* RowDeviceInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowDeviceInfoViewModel.swift; sourceTree = "<group>"; };
 		B55B8A4C2C6688B400F9E916 /* iFlowerStruct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iFlowerStruct.swift; sourceTree = "<group>"; };
+		B56E6E452C95DAA800AABEFD /* iFlowerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iFlowerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B56E6E472C95DAA800AABEFD /* iFlowerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iFlowerTests.swift; sourceTree = "<group>"; };
+		B56E6E4E2C95DAEC00AABEFD /* BluetoothManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BluetoothManagerTests.swift; path = UnitTest/BluetoothManagerTests.swift; sourceTree = "<group>"; };
 		B57882352C3AE34400F00AC5 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StartView.swift; path = iFlower/View/StartView.swift; sourceTree = SOURCE_ROOT; };
 		B57882372C3AEA1600F00AC5 /* RowStartInfoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RowStartInfoViewModel.swift; sourceTree = "<group>"; };
 		B5F653952C2B075F0097EFBA /* iFlower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iFlower.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -43,6 +58,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		B56E6E422C95DAA800AABEFD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B5F653922C2B075F0097EFBA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -70,6 +92,23 @@
 			path = ObjectStruct;
 			sourceTree = "<group>";
 		};
+		B56E6E392C95D7F700AABEFD /* UnitTest */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UnitTest;
+			sourceTree = "<group>";
+		};
+		B56E6E462C95DAA800AABEFD /* iFlowerTests */ = {
+			isa = PBXGroup;
+			children = (
+				B56E6E392C95D7F700AABEFD /* UnitTest */,
+				B56E6E472C95DAA800AABEFD /* iFlowerTests.swift */,
+				B56E6E4E2C95DAEC00AABEFD /* BluetoothManagerTests.swift */,
+			);
+			path = iFlowerTests;
+			sourceTree = "<group>";
+		};
 		B57882392C3AEA1A00F00AC5 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +122,7 @@
 			isa = PBXGroup;
 			children = (
 				B5F653972C2B075F0097EFBA /* iFlower */,
+				B56E6E462C95DAA800AABEFD /* iFlowerTests */,
 				B5F653962C2B075F0097EFBA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -91,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				B5F653952C2B075F0097EFBA /* iFlower.app */,
+				B56E6E452C95DAA800AABEFD /* iFlowerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -142,6 +183,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		B56E6E442C95DAA800AABEFD /* iFlowerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B56E6E4B2C95DAA800AABEFD /* Build configuration list for PBXNativeTarget "iFlowerTests" */;
+			buildPhases = (
+				B56E6E412C95DAA800AABEFD /* Sources */,
+				B56E6E422C95DAA800AABEFD /* Frameworks */,
+				B56E6E432C95DAA800AABEFD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B56E6E4A2C95DAA800AABEFD /* PBXTargetDependency */,
+			);
+			name = iFlowerTests;
+			productName = iFlowerTests;
+			productReference = B56E6E452C95DAA800AABEFD /* iFlowerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		B5F653942C2B075F0097EFBA /* iFlower */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = B5F653A42C2B07600097EFBA /* Build configuration list for PBXNativeTarget "iFlower" */;
@@ -169,6 +228,10 @@
 				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
+					B56E6E442C95DAA800AABEFD = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = B5F653942C2B075F0097EFBA;
+					};
 					B5F653942C2B075F0097EFBA = {
 						CreatedOnToolsVersion = 15.4;
 					};
@@ -189,11 +252,19 @@
 			projectRoot = "";
 			targets = (
 				B5F653942C2B075F0097EFBA /* iFlower */,
+				B56E6E442C95DAA800AABEFD /* iFlowerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		B56E6E432C95DAA800AABEFD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B5F653932C2B075F0097EFBA /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -206,6 +277,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		B56E6E412C95DAA800AABEFD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B56E6E4F2C95DAEC00AABEFD /* BluetoothManagerTests.swift in Sources */,
+				B56E6E482C95DAA800AABEFD /* iFlowerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B5F653912C2B075F0097EFBA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -227,7 +307,49 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		B56E6E4A2C95DAA800AABEFD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B5F653942C2B075F0097EFBA /* iFlower */;
+			targetProxy = B56E6E492C95DAA800AABEFD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		B56E6E4C2C95DAA800AABEFD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L4XDJUG5Z2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AndriiIzbash.iFlowerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iFlower.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iFlower";
+			};
+			name = Debug;
+		};
+		B56E6E4D2C95DAA800AABEFD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = L4XDJUG5Z2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = AndriiIzbash.iFlowerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/iFlower.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iFlower";
+			};
+			name = Release;
+		};
 		B5F653A22C2B07600097EFBA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -354,7 +476,7 @@
 				CODE_SIGN_ENTITLEMENTS = iFlower/iFlower.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"iFlower/Preview Content\"";
 				DEVELOPMENT_TEAM = L4XDJUG5Z2;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -383,7 +505,7 @@
 				CODE_SIGN_ENTITLEMENTS = iFlower/iFlower.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"iFlower/Preview Content\"";
 				DEVELOPMENT_TEAM = L4XDJUG5Z2;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -407,6 +529,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		B56E6E4B2C95DAA800AABEFD /* Build configuration list for PBXNativeTarget "iFlowerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B56E6E4C2C95DAA800AABEFD /* Debug */,
+				B56E6E4D2C95DAA800AABEFD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B5F653902C2B075F0097EFBA /* Build configuration list for PBXProject "iFlower" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

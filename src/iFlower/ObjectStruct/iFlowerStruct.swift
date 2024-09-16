@@ -17,7 +17,9 @@ struct iFlowerDevice
     var airHumidity: Int        // Вологість повітря у відсотках
     var lightLevel: Int         // Рівень освітлення у люменах
     
-    mutating func clearDeviceData() 
+    var isWatering: Bool        // Чи здійснюється полив росилин
+    
+    mutating func clearDeviceData()
     {
         self.versionFirmware = "0.0"
         self.serialNumber = "0000-0000-0000-0000"

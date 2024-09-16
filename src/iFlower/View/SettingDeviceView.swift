@@ -77,7 +77,7 @@ struct SettingDeviceView: View
                                 bluetoothManager.sendData(dataToSend)
                             }) {
                                 Text("Send Data")
-                                    .foregroundColor(.blue)
+                                    .foregroundColor(Color.accentColor)
                             }
                             .padding()
                         }// VStack with info
