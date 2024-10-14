@@ -27,6 +27,7 @@ const int wet = 210; // value for wet sensor
 #define serialNumber "0000-0000-0000-0001"
 #define versionFirmware "0.25b"
 
+
 // Base abstract class for all sensors
 class Sensor 
 {
@@ -35,6 +36,40 @@ class Sensor
   public:
     Sensor(int pin) : pin(pin) {}
     virtual int readValue() = 0;  // Just virtual method for reading data
+};// class Sensor
+
+
+// Base abstract class for all sensors
+class Equipment 
+{
+  protected:
+      int pin;   // Pin for connecting the equimpent
+      bool isOn; // Flag to check if the equipment is on or off
+  public:
+    // Constructor to initialize pin and default state
+    Equipment(int pin) : pin(pin), isOn(false) {}
+
+    // Method to turn on the equipment
+    virtual void turnOn() 
+    {
+        // Assuming HIGH is the state to turn on the equipment
+        digitalWrite(pin, HIGH);
+        isOn = true;
+    }// virtual void turnOn()
+
+    // Method to turn off the equipment
+    virtual void turnOff() 
+    {
+        // Assuming LOW is the state to turn off the equipment
+        digitalWrite(pin, LOW);
+        isOn = false;
+    }// virtual void turnOff()
+
+    // Check if the equipment is on
+    bool isEquipmentOn()
+    {
+      return isOn;
+    }// bool isEquipmentOn()
 };// class Sensor
 
 
@@ -131,13 +166,17 @@ class GreenHouse
       AirTemperatureHumiditySensor *tempHumiditySensor;
       LightSensor *lightSensor;
 
+      Equipment *wateringSystem;    
+
     public:
-      GreenHouse(SoilMoistureSensor *ms, AirTemperatureHumiditySensor *ths, LightSensor *ls) 
+      GreenHouse(SoilMoistureSensor *ms, AirTemperatureHumiditySensor *ths, LightSensor *ls, Equipment *lsys) 
       {
         climateFactors = new ClimateFactors();
         moistureSensor = ms;
         tempHumiditySensor = ths;
         lightSensor = ls;
+
+        wateringSystem = lsys;
       }
 
       ~GreenHouse() 
@@ -152,6 +191,24 @@ class GreenHouse
         climateFactors->airTemperature = tempHumiditySensor->readTemperature();
         climateFactors->airHumidity = tempHumiditySensor->readHumidity();
         climateFactors->lightLevel = lightSensor->readValue();
+      }
+
+      void turnOnWateringSystem()
+      {
+        if (!wateringSystem->isEquipmentOn())
+        {
+          wateringSystem->turnOn();
+          Serial.println("Watering system is turned on.");
+        }
+      }
+
+      void turnOffWateringSystem()
+      {
+        if (wateringSystem->isEquipmentOn()) 
+        {
+          wateringSystem->turnOff();
+          Serial.println("Watering system is turned off.");
+        }
       }
 
       // Getters
@@ -230,8 +287,11 @@ void setup()
   AirTemperatureHumiditySensor airSensor(DHT_PIN, DHT11); // Temperature and humidity sensor
   LightSensor lightSensor(PIN_PHOTO_SENSOR);              // Light sensor on analog pin 
 
+  // init equipment
+  Equipment wateringSystem(RELAY_PIN);
+
   // new init GreenGouse
-  greenHouse = new GreenHouse(&soilMoistureSensor, &airSensor, &lightSensor); // Создаем объект GreenHouse
+  greenHouse = new GreenHouse(&soilMoistureSensor, &airSensor, &lightSensor, &wateringSystem); // GreenHouse
 
   // get data
   greenHouse->collectData();
