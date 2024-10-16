@@ -6,6 +6,11 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
+// include AUnit test's
+#line 2 "AUnitTest.ino"
+#include <AUnit.h>
+using namespace aunit;
+
 // const value seriaul bate
 const unsigned long SERIAL_BAUD_RATE = 9600;
 
@@ -25,7 +30,7 @@ const int wet = 210; // value for wet sensor
 
 // Serial number and verison firmware
 #define serialNumber "0000-0000-0000-0001"
-#define versionFirmware "0.25b"
+#define versionFirmware "0.3a"
 
 
 // Base abstract class for all sensors
@@ -315,6 +320,18 @@ void setup()
 
 void loop() 
 {
+  TestRunner::run();
+  
+  // Collect data from sensors
+  greenHouse->collectData();
+  greenHouse->sendDataToBluetooth();
+
+  delay(1000); // Wait for 1 second before the next loop
+}// void loop()
+
+// for debug data analysis 
+void debugMode()
+{
   // Collect data from sensors
   greenHouse->collectData();
 
@@ -337,6 +354,58 @@ void loop()
 
   // Send data via Bluetooth (optional)
   greenHouse->sendDataToBluetooth();
+}// void debugMode()
 
-  delay(1000); // Wait for 1 second before the next loop
-}// void loop()
+
+// Unit test's
+// test for SoilMoistureSensor
+test(SoilMoistureSensorTest) 
+{
+  SoilMoistureSensor sensor(PIN_SOIL_SENSOR);
+  
+  int mockValue = 300; // Simulate a mock value for soil moisture
+  analogWrite(PIN_SOIL_SENSOR, mockValue); // Simulate sensor input
+
+  int result = sensor.readValue();
+  assertTrue(result >= 0 && result <= 100); // Ensure the value is in percentage range (0-100)
+}// test(SoilMoistureSensorTest) 
+
+// test for WateringSystem
+test(WateringSystemTest) 
+{
+  Equipment wateringSystem(RELAY_PIN);
+  
+  wateringSystem.turnOn();
+  assertTrue(wateringSystem.isEquipmentOn()); // Check if the watering system is on
+
+  wateringSystem.turnOff();
+  assertFalse(wateringSystem.isEquipmentOn()); // Check if the watering system is off
+}// test(WateringSystemTest) 
+
+// test for GreenHouse
+test(GreenHouseTest) 
+{
+  // Initialize sensors and equipment
+  SoilMoistureSensor moistureSensor(PIN_SOIL_SENSOR);
+  AirTemperatureHumiditySensor airSensor(DHT_PIN, DHT11);
+  LightSensor lightSensor(PIN_PHOTO_SENSOR);
+  Equipment wateringSystem(RELAY_PIN);
+
+  // Create an instance of the GreenHouse
+  GreenHouse greenhouse(&moistureSensor, &airSensor, &lightSensor, &wateringSystem);
+
+  // Collect data from sensors
+  greenhouse.collectData();
+  assertTrue(greenhouse.getSoilMoisture() >= 0 && greenhouse.getSoilMoisture() <= 100); // Check soil moisture range
+  assertTrue(greenhouse.getAirTemperature() >= -50 && greenhouse.getAirTemperature() <= 50); // Check air temperature range
+  assertTrue(greenhouse.getAirHumidity() >= 0 && greenhouse.getAirHumidity() <= 100); // Check humidity range
+  assertTrue(greenhouse.getLightLevel() >= 0 && greenhouse.getLightLevel() <= 1000); // Check light level range
+
+  // Test watering system control
+  greenhouse.turnOnWateringSystem();
+  assertTrue(wateringSystem.isEquipmentOn()); // Check if watering system is turned on
+
+  greenhouse.turnOffWateringSystem();
+  assertFalse(wateringSystem.isEquipmentOn()); // Check if watering system is turned off
+}// test(GreenHouseTest) 
+
