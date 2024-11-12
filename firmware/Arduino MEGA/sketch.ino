@@ -15,15 +15,15 @@ using namespace aunit;
 const unsigned long SERIAL_BAUD_RATE = 9600;
 
 // value for Moisture Sensor v1.2
-const int dry = 510; // value for dry sensor
-const int wet = 210; // value for wet sensor
+const int dry = 510;          // value for dry sensor
+const int wet = 210;          // value for wet sensor
 
-#define BT Serial3    // Bluetooth serial
-#define DHTTYPE DHT11 //DH11 Version sensor
+#define BT Serial3            // Bluetooth serial
+#define DHTTYPE DHT11         //DH11 Version sensor
 
 // Pin's
 #define DHT_PIN 52            // pin where include DH11 sensor for get data
-#define RELAY_PIN 50          // pin where realy
+#define RELAY_PIN 50          // pin where controll realy
 #define LED_PIN 13            // pin led
 #define PIN_SOIL_SENSOR A0    // pin where soil sensor (analog in)
 #define PIN_PHOTO_SENSOR A5   // pin where photo sensor (analog in)
@@ -58,7 +58,7 @@ class Equipment
     virtual void turnOn() 
     {
         // Assuming HIGH is the state to turn on the equipment
-        digitalWrite(pin, HIGH);
+        //digitalWrite(pin, HIGH);
         isOn = true;
     }// virtual void turnOn()
 
@@ -66,7 +66,7 @@ class Equipment
     virtual void turnOff() 
     {
         // Assuming LOW is the state to turn off the equipment
-        digitalWrite(pin, LOW);
+        //digitalWrite(pin, LOW);
         isOn = false;
     }// virtual void turnOff()
 
@@ -131,19 +131,19 @@ class AirTemperatureHumiditySensor : public Sensor
         sensors_event_t event;
         dht.humidity().getEvent(&event);
         if (isnan(event.relative_humidity))
-         {
+        {
             Serial.println(F("Error reading humidity!"));
             return 0;
         }
-         else 
+        else 
         {
-            return round(event.relative_humidity);  // Returning the rounded humidity value
+          return round(event.relative_humidity);  // Returning the rounded humidity value
         }
     }
 };// class AirTemperatureHumiditySensor : public Sensor
 
 
-// Класс для датчика освещенности
+// Class LightSensor
 class LightSensor : public Sensor 
 {
   public:
@@ -151,9 +151,10 @@ class LightSensor : public Sensor
 
     int readValue() override 
     {
-        return ((1000 - analogRead(pin)) / 1000.0) * 1000.0;  // Convert illuminance value
+      return ((1000 - analogRead(pin)) / 1000.0) * 1000.0;  // Convert illuminance value
     }
-};
+};// class LightSensor : public Sensor 
+
 
 struct ClimateFactors 
 {
@@ -163,6 +164,7 @@ struct ClimateFactors
     int lightLevel;
 };// struct ClimateFactors 
 
+// GrennHouse
 class GreenHouse
 {
     private:
@@ -200,20 +202,14 @@ class GreenHouse
 
       void turnOnWateringSystem()
       {
-        if (!wateringSystem->isEquipmentOn())
-        {
-          wateringSystem->turnOn();
-          Serial.println("Watering system is turned on.");
-        }
+        wateringSystem->turnOn();
+        Serial.println("Watering system is turned on.");
       }
 
       void turnOffWateringSystem()
       {
-        if (wateringSystem->isEquipmentOn()) 
-        {
-          wateringSystem->turnOff();
-          Serial.println("Watering system is turned off.");
-        }
+        wateringSystem->turnOff();
+        Serial.println("Watering system is turned off.");
       }
 
       // Getters
@@ -275,10 +271,39 @@ class GreenHouse
           String jsonString = JSON.stringify(jsonData);
           BT.print(jsonString);  // Send data via Bluetooth
           BT.print("\n");
-          Serial.println("Data sent via Bluetooth: " + jsonString);
-      }
-};// class greenHouse
 
+          // debug
+          //Serial.println("Data sent via Bluetooth: " + jsonString);
+      }
+
+      void processCommandFromBluetooth(const String& data)
+      {
+        Serial.println("Received Bluetooth Data: " + data);
+
+        if (data == "turnOnWatering")
+        {
+          digitalWrite(RELAY_PIN, LOW);
+          //turnOnWateringSystem();
+          Serial.println("Watering system turned ON via Bluetooth.");
+        }
+        else if (data == "turnOffWatering")
+        {
+          digitalWrite(RELAY_PIN, HIGH);
+          //turnOffWateringSystem();
+          Serial.println("Watering system turned OFF via Bluetooth.");
+        }
+        else if (data == "getStatus")
+        {
+          collectData();
+          sendDataToBluetooth();
+          Serial.println("Status sent via Bluetooth.");
+        }
+        else
+        {
+          Serial.println("Unknown command received.");
+        }
+      }// void processCommandFromBluetooth(const String& data)
+};// class greenHouse
 
 // init GreenHouse
 GreenHouse *greenHouse;
@@ -308,23 +333,42 @@ void setup()
   BT.begin(SERIAL_BAUD_RATE);
 
   // init pinMode
-  pinMode(LED_PIN, OUTPUT);   
+  pinMode(LED_PIN, OUTPUT);  
+
+  digitalWrite(RELAY_PIN, HIGH);  //off relay
   pinMode(RELAY_PIN, OUTPUT);  
-  digitalWrite(RELAY_PIN, HIGH);
+  digitalWrite(RELAY_PIN, HIGH);  //off relay
 
   // wait 2 saecond for init
   delay(2000);
   Serial.println("ENTER AT Commands:");
 }// void setup()
 
-
 void loop() 
 {
-  TestRunner::run();
+  // for start test's
+  //TestRunner::run();
   
   // Collect data from sensors
   greenHouse->collectData();
   greenHouse->sendDataToBluetooth();
+
+  String receivedData = "";
+
+  while(BT.available() > 0)
+  {
+    char c = BT.read();
+
+    if (c == '\n') 
+    {
+      greenHouse->processCommandFromBluetooth(receivedData);
+      receivedData = "";
+    }
+    else
+    {
+      receivedData += c;
+    }
+  }
 
   delay(1000); // Wait for 1 second before the next loop
 }// void loop()
@@ -362,11 +406,9 @@ void debugMode()
 test(SoilMoistureSensorTest) 
 {
   SoilMoistureSensor sensor(PIN_SOIL_SENSOR);
-  
-  int mockValue = 300; // Simulate a mock value for soil moisture
-  analogWrite(PIN_SOIL_SENSOR, mockValue); // Simulate sensor input
 
   int result = sensor.readValue();
+
   assertTrue(result >= 0 && result <= 100); // Ensure the value is in percentage range (0-100)
 }// test(SoilMoistureSensorTest) 
 
@@ -408,4 +450,3 @@ test(GreenHouseTest)
   greenhouse.turnOffWateringSystem();
   assertFalse(wateringSystem.isEquipmentOn()); // Check if watering system is turned off
 }// test(GreenHouseTest) 
-
