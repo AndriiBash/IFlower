@@ -28,6 +28,8 @@ struct iFlowerDevice
         self.airTemperature = 0
         self.airHumidity = 0
         self.lightLevel = 0
+        
+        self.isWatering = false
     }// mutating func resetSensorValues()
 
 }

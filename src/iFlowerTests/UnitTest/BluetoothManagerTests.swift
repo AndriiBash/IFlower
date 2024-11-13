@@ -23,8 +23,6 @@ class BluetoothManagerTests: XCTestCase
         bluetoothManager = BluetoothManager()
         mockCentralManager = MockCentralManager()
         mockPeripheral = MockPeripheral()
-
-        bluetoothManager = BluetoothManager()
     }// override func setUpWithError() throws
 
     
@@ -42,7 +40,7 @@ class BluetoothManagerTests: XCTestCase
         bluetoothManager.bluetoothEnabled = true
         bluetoothManager.startScanning()
         
-        mockCentralManager.isScanning = bluetoothManager.isScanning
+        mockCentralManager.startScanning()
         
         XCTAssertTrue(bluetoothManager.isScanning)
         XCTAssertNotNil(bluetoothManager.scanTimer)
@@ -63,7 +61,7 @@ class BluetoothManagerTests: XCTestCase
     // Тестування зупинки сканування
     func testStopScanning() throws
     {
-        bluetoothManager.isScanning = true
+        bluetoothManager.startScanning()
         bluetoothManager.scanTimer = Timer()
         bluetoothManager.stopScanning()
         
@@ -148,6 +146,10 @@ class MockCentralManager: CentralManagerProtocol
         isScanning = true
     }// func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: [String : Any]?)
     
+    func startScanning()
+    {
+        isScanning = true
+    }// func startScanning()
     
     func stopScan()
     {

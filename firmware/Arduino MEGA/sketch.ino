@@ -57,17 +57,17 @@ class Equipment
     // Method to turn on the equipment
     virtual void turnOn() 
     {
-        // Assuming HIGH is the state to turn on the equipment
-        //digitalWrite(pin, HIGH);
-        isOn = true;
+      // Assuming HIGH is the state to turn on the equipment
+      digitalWrite(pin, LOW);
+      isOn = true;
     }// virtual void turnOn()
 
     // Method to turn off the equipment
     virtual void turnOff() 
     {
-        // Assuming LOW is the state to turn off the equipment
-        //digitalWrite(pin, LOW);
-        isOn = false;
+      // Assuming LOW is the state to turn off the equipment
+      digitalWrite(pin, HIGH);
+      isOn = false;
     }// virtual void turnOff()
 
     // Check if the equipment is on
@@ -100,45 +100,45 @@ class AirTemperatureHumiditySensor : public Sensor
   public:
     AirTemperatureHumiditySensor(int pin, int dhtType) : Sensor(pin), dht(pin, dhtType) 
     {
-        dht.begin();  // Initialize the DHT sensor
+      dht.begin();  // Initialize the DHT sensor
     }
 
     // Implementing the readValue method
     int readValue() override 
     {
-        return 0; // null
+      return 0; // null
     }
 
     // Method for obtaining air temperature
     int readTemperature() 
     {
-        sensors_event_t event;
-        dht.temperature().getEvent(&event);
-        if (isnan(event.temperature)) 
-        {
-            Serial.println(F("Error reading temperature!"));
-            return 0;
-        }
-        else 
-        {
-            return round(event.temperature);  // Returning the rounded temperature value
-        }
+      sensors_event_t event;
+      dht.temperature().getEvent(&event);
+      if (isnan(event.temperature)) 
+      {
+          Serial.println(F("Error reading temperature!"));
+          return 0;
+      }
+      else 
+      {
+          return round(event.temperature);  // Returning the rounded temperature value
+      }
     }
 
     // Method for obtaining air humidity
     int readHumidity() 
     {
-        sensors_event_t event;
-        dht.humidity().getEvent(&event);
-        if (isnan(event.relative_humidity))
-        {
-            Serial.println(F("Error reading humidity!"));
-            return 0;
-        }
-        else 
-        {
-          return round(event.relative_humidity);  // Returning the rounded humidity value
-        }
+      sensors_event_t event;
+      dht.humidity().getEvent(&event);
+      if (isnan(event.relative_humidity))
+      {
+        Serial.println(F("Error reading humidity!"));
+        return 0;
+      }
+      else 
+      {
+        return round(event.relative_humidity);  // Returning the rounded humidity value
+      }
     }
 };// class AirTemperatureHumiditySensor : public Sensor
 
@@ -158,21 +158,25 @@ class LightSensor : public Sensor
 
 struct ClimateFactors 
 {
-    int soilMoisture;
-    int airTemperature;
-    int airHumidity;
-    int lightLevel;
+  int soilMoisture;
+  int airTemperature;
+  int airHumidity;
+  int lightLevel;
 };// struct ClimateFactors 
 
 // GrennHouse
 class GreenHouse
 {
     private:
+      // factor's
       ClimateFactors *climateFactors;
+
+      // sensor's
       SoilMoistureSensor *moistureSensor;
       AirTemperatureHumiditySensor *tempHumiditySensor;
       LightSensor *lightSensor;
 
+      // Equipment
       Equipment *wateringSystem;    
 
     public:
@@ -203,13 +207,11 @@ class GreenHouse
       void turnOnWateringSystem()
       {
         wateringSystem->turnOn();
-        Serial.println("Watering system is turned on.");
       }
 
       void turnOffWateringSystem()
       {
         wateringSystem->turnOff();
-        Serial.println("Watering system is turned off.");
       }
 
       // Getters
@@ -257,23 +259,26 @@ class GreenHouse
       // Method to send data via Bluetooth
       void sendDataToBluetooth() 
       {
-          JSONVar jsonData;
-          // serial number and firmware ver
-          jsonData["serialNumber"] = serialNumber;
-          jsonData["versionFirmware"] = versionFirmware;
+        JSONVar jsonData;
+        // serial number and firmware ver
+        jsonData["serialNumber"] = serialNumber;
+        jsonData["versionFirmware"] = versionFirmware;
     
-          // data from sensor
-          jsonData["soilMoisture"] = climateFactors->soilMoisture;
-          jsonData["airTemperature"] = climateFactors->airTemperature;
-          jsonData["airHumidity"] = climateFactors->airHumidity;
-          jsonData["lightLevel"] = climateFactors->lightLevel;
-          
-          String jsonString = JSON.stringify(jsonData);
-          BT.print(jsonString);  // Send data via Bluetooth
-          BT.print("\n");
+        // data from sensor
+        jsonData["soilMoisture"] = climateFactors->soilMoisture;
+        jsonData["airTemperature"] = climateFactors->airTemperature;
+        jsonData["airHumidity"] = climateFactors->airHumidity;
+        jsonData["lightLevel"] = climateFactors->lightLevel;
+        
+        // data work's equipment
+        jsonData["isWatering"] = wateringSystem->isEquipmentOn();
 
-          // debug
-          //Serial.println("Data sent via Bluetooth: " + jsonString);
+        String jsonString = JSON.stringify(jsonData);
+        BT.print(jsonString);  // Send data via Bluetooth
+        BT.print("\n");
+
+        // debug
+        //Serial.println("Data sent via Bluetooth: " + jsonString);
       }
 
       void processCommandFromBluetooth(const String& data)
@@ -282,14 +287,14 @@ class GreenHouse
 
         if (data == "turnOnWatering")
         {
-          digitalWrite(RELAY_PIN, LOW);
-          //turnOnWateringSystem();
+          //digitalWrite(RELAY_PIN, LOW);
+          turnOnWateringSystem();
           Serial.println("Watering system turned ON via Bluetooth.");
         }
         else if (data == "turnOffWatering")
         {
-          digitalWrite(RELAY_PIN, HIGH);
-          //turnOffWateringSystem();
+          //digitalWrite(RELAY_PIN, HIGH);
+          turnOffWateringSystem();
           Serial.println("Watering system turned OFF via Bluetooth.");
         }
         else if (data == "getStatus")
@@ -305,20 +310,20 @@ class GreenHouse
       }// void processCommandFromBluetooth(const String& data)
 };// class greenHouse
 
+// Init sensor
+SoilMoistureSensor soilMoistureSensor(PIN_SOIL_SENSOR); // Soil moisture sensor on pin 
+AirTemperatureHumiditySensor airSensor(DHT_PIN, DHT11); // Temperature and humidity sensor
+LightSensor lightSensor(PIN_PHOTO_SENSOR);              // Light sensor on analog pin 
+
+// init equipment
+Equipment wateringSystem(RELAY_PIN);                    // Relay for on or off watering system
+
 // init GreenHouse
 GreenHouse *greenHouse;
 
 void setup() 
 {
   Serial.begin(SERIAL_BAUD_RATE);
-
-  // Init sensor
-  SoilMoistureSensor soilMoistureSensor(PIN_SOIL_SENSOR); // Soil moisture sensor on pin 
-  AirTemperatureHumiditySensor airSensor(DHT_PIN, DHT11); // Temperature and humidity sensor
-  LightSensor lightSensor(PIN_PHOTO_SENSOR);              // Light sensor on analog pin 
-
-  // init equipment
-  Equipment wateringSystem(RELAY_PIN);
 
   // new init GreenGouse
   greenHouse = new GreenHouse(&soilMoistureSensor, &airSensor, &lightSensor, &wateringSystem); // GreenHouse

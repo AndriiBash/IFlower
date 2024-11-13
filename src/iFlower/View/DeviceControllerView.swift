@@ -16,10 +16,12 @@ struct DeviceControllerView: View
     @State private var isShowDeviceSensor:          Bool = true
     @State private var isShowDeviceInfo:            Bool = true
     @State private var isShowActions:               Bool = true
+    @State private var isPressedWatering:           Bool = false
 
     @State private var scrollViewSensorHeight:      CGFloat = 65
     @State private var scrollViewActionsHeight:     CGFloat = 65
     @State private var scrollViewInfoHeight:        CGFloat = 120
+    
     
     var body: some View
     {
@@ -149,7 +151,7 @@ struct DeviceControllerView: View
                                 
                                 RowDeviceInfoViewModel(imageName: "humidity", mainText: "Волога повітря", bodyText: String(bluetoothManager.iFlowerMainDevice.airHumidity) + "%", colorImage: Color.accentColor)
                                 
-                                RowDeviceInfoViewModel(imageName: "lightbulb", mainText: "Світловий поток", bodyText: String(bluetoothManager.iFlowerMainDevice.lightLevel) + " Люменів", colorImage: Color.accentColor)
+                                RowDeviceInfoViewModel(imageName: "lightbulb", mainText: "Рівень освітлення", bodyText: String(bluetoothManager.iFlowerMainDevice.lightLevel) + " Люменів", colorImage: Color.accentColor)
                             }// LazyHGrid
                             .padding()
                         }// ScrollView with the main information from sensor's
@@ -201,11 +203,11 @@ struct DeviceControllerView: View
                                     
                                     if self.bluetoothManager.iFlowerMainDevice.isWatering
                                     {
-                                        self.bluetoothManager.sendData("1")
+                                        self.bluetoothManager.sendData("turnOnWatering\n")
                                     }
                                     else
                                     {
-                                        self.bluetoothManager.sendData("0")
+                                        self.bluetoothManager.sendData("turnOffWatering\n")
                                     }
                                 }
                                 label:

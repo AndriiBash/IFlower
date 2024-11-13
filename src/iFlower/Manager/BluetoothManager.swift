@@ -12,16 +12,19 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
 {
     var centralManager: CBCentralManager!
     @Published var deviceInfos: [DeviceStruct] = []
-    @Published var connectedDevices: [DeviceStruct] = [] {
+    @Published var connectedDevices: [DeviceStruct] = []
+    {
         didSet
         {
             saveConnectedDevices()
         }
     }
-    @Published var isScanning: Bool = false
-    @Published var bluetoothEnabled: Bool = false
-    @Published var isConnected: Bool = false
-    @Published var receivedData: String = ""
+    @Published var isScanning:                  Bool = false
+    @Published var bluetoothEnabled:            Bool = false
+    @Published var isConnected:                 Bool = false
+    @Published var ignoreNextUpdate:            Bool = true
+    @Published var receivedData:                String = ""
+
     @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(versionFirmware: "0.0", serialNumber: "0000-0000-0000-0000", soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0, isWatering: false)
     
     var peripherals: [CBPeripheral] = []
@@ -32,7 +35,6 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
 
     // template
     var accumulatedData = Data()
-
     
     override init()
     {
@@ -45,7 +47,8 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     
     func startScanning()
     {
-        guard bluetoothEnabled else {
+        guard bluetoothEnabled else 
+        {
             print("Bluetooth is not enabled.")
             return
         }
@@ -255,7 +258,8 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                    let soilMoisture = jsonObject["soilMoisture"] as? Int,
                    let airHumidity = jsonObject["airHumidity"] as? Int,
                    let lightLevel = jsonObject["lightLevel"] as? Int,
-                   let airTemperature = jsonObject["airTemperature"] as? Int
+                   let airTemperature = jsonObject["airTemperature"] as? Int,
+                   let isWatering = jsonObject["isWatering"] as? Bool
                 {
                     //DispatchQueue.main.async
                     
@@ -267,7 +271,9 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                     self.iFlowerMainDevice.lightLevel       = lightLevel
                     self.iFlowerMainDevice.airTemperature   = airTemperature
                     self.iFlowerMainDevice.lightLevel       = lightLevel
-
+                    
+                    self.iFlowerMainDevice.isWatering       = isWatering
+                    
                     print("Received data: \(jsonObject)")
                 }
             }
