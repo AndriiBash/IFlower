@@ -321,6 +321,55 @@ Equipment wateringSystem(RELAY_PIN);                    // Relay for on or off w
 // init GreenHouse
 GreenHouse *greenHouse;
 
+void receiveBluetoothCommand()
+{
+  String receivedData = "";
+
+  while(BT.available() > 0)
+  {
+    char c = BT.read();
+
+    if (c == '\n') 
+    {
+      greenHouse->processCommandFromBluetooth(receivedData);
+      receivedData = "";
+    }
+    else
+    {
+      receivedData += c;
+    }
+  }
+}// void receiveBluetoothCommand()
+
+
+// for debug data analysis 
+void debugMode()
+{
+  // Collect data from sensors
+  greenHouse->collectData();
+
+  // Output the collected data to the serial monitor
+  Serial.print("Soil Moisture: ");
+  Serial.print(greenHouse->getSoilMoisture());
+  Serial.println("%"); // Output as percentage
+
+  Serial.print("Air Temperature: ");
+  Serial.print(greenHouse->getAirTemperature());
+  Serial.println("°C"); // Output in degrees Celsius
+
+  Serial.print("Air Humidity: ");
+  Serial.print(greenHouse->getAirHumidity());
+  Serial.println("%"); // Output as percentage
+
+  Serial.print("Light Level: ");
+  Serial.print(greenHouse->getLightLevel());
+  Serial.println("Lux"); // Output as percentage
+
+  // Send data via Bluetooth (optional)
+  greenHouse->sendDataToBluetooth();
+}// void debugMode()
+
+
 void setup() 
 {
   Serial.begin(SERIAL_BAUD_RATE);
@@ -353,57 +402,16 @@ void loop()
 {
   // for start test's
   //TestRunner::run();
-  
+
+  // receive bluetooth command from desktop app
+  receiveBluetoothCommand();
+
   // Collect data from sensors
   greenHouse->collectData();
   greenHouse->sendDataToBluetooth();
-
-  String receivedData = "";
-
-  while(BT.available() > 0)
-  {
-    char c = BT.read();
-
-    if (c == '\n') 
-    {
-      greenHouse->processCommandFromBluetooth(receivedData);
-      receivedData = "";
-    }
-    else
-    {
-      receivedData += c;
-    }
-  }
 
   delay(1000); // Wait for 1 second before the next loop
 }// void loop()
-
-// for debug data analysis 
-void debugMode()
-{
-  // Collect data from sensors
-  greenHouse->collectData();
-
-  // Output the collected data to the serial monitor
-  Serial.print("Soil Moisture: ");
-  Serial.print(greenHouse->getSoilMoisture());
-  Serial.println("%"); // Output as percentage
-
-  Serial.print("Air Temperature: ");
-  Serial.print(greenHouse->getAirTemperature());
-  Serial.println("°C"); // Output in degrees Celsius
-
-  Serial.print("Air Humidity: ");
-  Serial.print(greenHouse->getAirHumidity());
-  Serial.println("%"); // Output as percentage
-
-  Serial.print("Light Level: ");
-  Serial.print(greenHouse->getLightLevel());
-  Serial.println("Lux"); // Output as percentage
-
-  // Send data via Bluetooth (optional)
-  greenHouse->sendDataToBluetooth();
-}// void debugMode()
 
 
 // Unit test's
