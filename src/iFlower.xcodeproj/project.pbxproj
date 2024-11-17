@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B53B9F202CEA066400EC162C /* ChartMarkGradientViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B9F1F2CEA066400EC162C /* ChartMarkGradientViewModel.swift */; };
 		B5447F6F2C40036C00EDD693 /* DeviceControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5447F6E2C40036C00EDD693 /* DeviceControllerView.swift */; };
 		B55B8A432C639E0B00F9E916 /* SettingDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A422C639E0B00F9E916 /* SettingDeviceView.swift */; };
 		B55B8A452C64DF5E00F9E916 /* BlurBehindWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A442C64DF5E00F9E916 /* BlurBehindWindow.swift */; };
@@ -36,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B53B9F1F2CEA066400EC162C /* ChartMarkGradientViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartMarkGradientViewModel.swift; sourceTree = "<group>"; };
 		B5447F6E2C40036C00EDD693 /* DeviceControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceControllerView.swift; sourceTree = "<group>"; };
 		B55B8A422C639E0B00F9E916 /* SettingDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingDeviceView.swift; sourceTree = "<group>"; };
 		B55B8A442C64DF5E00F9E916 /* BlurBehindWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurBehindWindow.swift; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 			children = (
 				B57882372C3AEA1600F00AC5 /* RowStartInfoViewModel.swift */,
 				B55B8A4A2C66803700F9E916 /* RowDeviceInfoViewModel.swift */,
+				B53B9F1F2CEA066400EC162C /* ChartMarkGradientViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				B5F653AA2C2B07F70097EFBA /* BluetoothManager.swift in Sources */,
 				B5F653992C2B075F0097EFBA /* iFlowerApp.swift in Sources */,
 				B5447F6F2C40036C00EDD693 /* DeviceControllerView.swift in Sources */,
+				B53B9F202CEA066400EC162C /* ChartMarkGradientViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

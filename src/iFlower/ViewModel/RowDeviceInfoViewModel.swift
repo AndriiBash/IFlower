@@ -9,10 +9,11 @@ import SwiftUI
 
 struct RowDeviceInfoViewModel: View
 {
-    let imageName: String
-    let mainText:  String
-    let bodyText:  String
+    let imageName:  String
+    let mainText:   String
+    let bodyText:   String
     let colorImage: Color
+    let maxHeight:  CGFloat
 
     var body: some View
     {
@@ -42,7 +43,7 @@ struct RowDeviceInfoViewModel: View
             }// Main HStack
             .padding(10)
         }// ZStack with info
-        .frame(maxHeight: 60)
+        .frame(maxHeight: maxHeight)
         .cornerRadius(20)
         .shadow(radius: 5)
     }

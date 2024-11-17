@@ -16,12 +16,13 @@ struct DeviceControllerView: View
     @State private var isShowDeviceSensor:          Bool = true
     @State private var isShowDeviceInfo:            Bool = true
     @State private var isShowActions:               Bool = true
-    @State private var isPressedWatering:           Bool = false
+    @State private var isShowCharts:                Bool = true
 
-    @State private var scrollViewSensorHeight:      CGFloat = 65
+    @State private var scrollViewSensorHeight:      CGFloat = 55
     @State private var scrollViewActionsHeight:     CGFloat = 65
     @State private var scrollViewInfoHeight:        CGFloat = 120
-    
+    @State private var scrollViewChartHeight:       CGFloat = 160
+
     
     var body: some View
     {
@@ -101,7 +102,7 @@ struct DeviceControllerView: View
                                     .padding(10)
                                     .padding(.vertical, 40)
                                 }// ZStack with info
-                                .frame(maxHeight: 120)
+                                .frame(maxHeight: scrollViewInfoHeight)
                                 .cornerRadius(20)
                                 .shadow(radius: 5)
                             }// LazyHGrid
@@ -116,7 +117,7 @@ struct DeviceControllerView: View
                                 withAnimation(Animation.easeInOut(duration: 0.2))
                                 {
                                     self.isShowDeviceSensor.toggle()
-                                    scrollViewSensorHeight = isShowDeviceSensor ? 65 : 0
+                                    scrollViewSensorHeight = isShowDeviceSensor ? 55 : 0
                                 }
                             }
                             label:
@@ -145,15 +146,15 @@ struct DeviceControllerView: View
                         {
                             LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
                             {
-                                RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: String(bluetoothManager.iFlowerMainDevice.soilMoisture) + "%", colorImage: Color.accentColor)
+                                RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: String(bluetoothManager.iFlowerMainDevice.soilMoisture) + "%", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
 
-                                RowDeviceInfoViewModel(imageName: "thermometer.medium", mainText: "Температура", bodyText: String(bluetoothManager.iFlowerMainDevice.airTemperature) + "°C", colorImage: Color.accentColor)
+                                RowDeviceInfoViewModel(imageName: "thermometer.medium", mainText: "Температура", bodyText: String(bluetoothManager.iFlowerMainDevice.airTemperature) + "°C", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
                                 
-                                RowDeviceInfoViewModel(imageName: "humidity", mainText: "Волога повітря", bodyText: String(bluetoothManager.iFlowerMainDevice.airHumidity) + "%", colorImage: Color.accentColor)
+                                RowDeviceInfoViewModel(imageName: "humidity", mainText: "Волога повітря", bodyText: String(bluetoothManager.iFlowerMainDevice.airHumidity) + "%", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
                                 
-                                RowDeviceInfoViewModel(imageName: "lightbulb", mainText: "Рівень освітлення", bodyText: String(bluetoothManager.iFlowerMainDevice.lightLevel) + " Люменів", colorImage: Color.accentColor)
+                                RowDeviceInfoViewModel(imageName: "lightbulb", mainText: "Рівень освітлення", bodyText: String(bluetoothManager.iFlowerMainDevice.lightLevel) + " Люменів", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
                             }// LazyHGrid
-                            .padding()
+                            .padding(.horizontal)
                         }// ScrollView with the main information from sensor's
                         .frame(height: scrollViewSensorHeight)
                         
@@ -236,7 +237,7 @@ struct DeviceControllerView: View
                                         }// Main HStack
                                         .padding(10)
                                     }// ZStack with info
-                                    .frame(maxHeight: 60)
+                                    .frame(maxHeight: scrollViewActionsHeight)
                                     .cornerRadius(20)
                                     .shadow(radius: 5)
                                 }
@@ -246,6 +247,50 @@ struct DeviceControllerView: View
                         }// ScrollView with the main information iFlower device
                         .frame(height: scrollViewActionsHeight)
                         
+                        
+                        HStack
+                        {
+                            Button
+                            {
+                                withAnimation(Animation.easeInOut(duration: 0.2))
+                                {
+                                    self.isShowCharts.toggle()
+                                    scrollViewChartHeight = isShowCharts ? 160 : 0
+                                }
+                            }
+                            label:
+                            {
+                                Text("Графіки")
+                                    .foregroundColor(Color.primary)
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                
+                                Image(systemName: "chevron.right")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 15, height: 15, alignment: .center)
+                                    .foregroundColor(Color.primary)
+                                    .rotationEffect(.degrees(isShowCharts ? 90 : 0))
+                                    .animation(.easeInOut(duration: 0.2), value: isShowCharts)
+                            }// Button for show and hide info from sensor
+                            .buttonStyle(PlainButtonStyle())
+                            .padding(.top)
+                            .padding(.leading)
+                            
+                            Spacer()
+                        }//HStack with button for open or close scrollView graph with action's
+
+                        ScrollView(.horizontal, showsIndicators: false)
+                        {
+                            LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
+                            {
+                                // uvaga! Used fake data
+
+                                ChartMarkGradientViewModel(nameChart: "Температура", colorChart: Color.accentColor, data: [20, 22, 17, 12, 15, 24, 19], maxHeight: scrollViewChartHeight)
+                            }// LazyHGrid
+                            .padding(.horizontal)
+                        }// ScrollView with the graph build on sensor's
+                        .frame(height: scrollViewChartHeight)
                         
                         Spacer()
                         
