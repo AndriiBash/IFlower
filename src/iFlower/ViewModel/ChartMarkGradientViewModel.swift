@@ -10,6 +10,8 @@ import Charts
 
 struct ChartMarkGradientViewModel: View
 {
+    @State private var chartSelection: Int?
+    
     let nameChart:  String
     let colorChart: Color
     let data:       [Double]
@@ -52,13 +54,38 @@ struct ChartMarkGradientViewModel: View
                         { index, value in
                             AreaMark(x: .value("index", index),
                                      y: .value("t", value))
+                            
                         }
-                        .interpolationMethod(.cardinal)
+                        .interpolationMethod(.catmullRom)
                         .foregroundStyle(linearGradient)
 
+                        if let chartSelection
+                        {
+                            RuleMark(x: .value("Index", chartSelection))
+                                .foregroundStyle(.gray.opacity(0.5))
+                                .annotation(position: .top)
+                                {
+                                    ZStack
+                                    {
+                                        Text("\(data[chartSelection], specifier: "%.2f")")
+                                            .font(.caption)
+                                            .fontWeight(.bold)
+                                            .padding(6)
+                                            .background(
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .fill(colorChart)
+                                                    .shadow(radius: 3)
+                                            )
+                                    }
+                                }
+                        }
                     }// Chart
                     .chartLegend(.hidden)
+                    .chartXScale(domain: 0 ... max(data.count - 1, 23))
+                    .chartYScale(domain: 0 ... (data.max() ?? 1) * 1.5)
+                    .chartXSelection(value: $chartSelection)
                     .padding(.vertical, 4)
+                    .padding(.top, chartSelection == nil ? 4 : 2)
                 }// VStack with detail info
             }// Main HStack
             .padding(10)

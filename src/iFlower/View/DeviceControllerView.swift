@@ -21,7 +21,7 @@ struct DeviceControllerView: View
     @State private var scrollViewSensorHeight:      CGFloat = 55
     @State private var scrollViewActionsHeight:     CGFloat = 65
     @State private var scrollViewInfoHeight:        CGFloat = 120
-    @State private var scrollViewChartHeight:       CGFloat = 160
+    @State private var scrollViewChartHeight:       CGFloat = 190
 
     
     var body: some View
@@ -255,7 +255,7 @@ struct DeviceControllerView: View
                                 withAnimation(Animation.easeInOut(duration: 0.2))
                                 {
                                     self.isShowCharts.toggle()
-                                    scrollViewChartHeight = isShowCharts ? 160 : 0
+                                    scrollViewChartHeight = isShowCharts ? 190 : 0
                                 }
                             }
                             label:
@@ -282,11 +282,11 @@ struct DeviceControllerView: View
 
                         ScrollView(.horizontal, showsIndicators: false)
                         {
-                            LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
+                            LazyHGrid(rows: [GridItem(.adaptive(minimum: 200))], spacing: 20)
                             {
                                 // uvaga! Used fake data
 
-                                ChartMarkGradientViewModel(nameChart: "Температура", colorChart: Color.accentColor, data: [20, 22, 17, 12, 15, 24, 19], maxHeight: scrollViewChartHeight)
+                                ChartMarkGradientViewModel(nameChart: "Температура", colorChart: Color.accentColor, data: [20, 22, 17, 12, 15, 24, 19, 14, 15, 17, 12, 23, 20, 22, 17, 12, 15, 24, 19, 14, 15, 17, 12, 23], maxHeight: scrollViewChartHeight)
                             }// LazyHGrid
                             .padding(.horizontal)
                         }// ScrollView with the graph build on sensor's
