@@ -12,10 +12,11 @@ struct ChartMarkGradientViewModel: View
 {
     @State private var chartSelection: Int?
     
-    let nameChart:  String
-    let colorChart: Color
-    let data:       [Double]
-    let maxHeight:  CGFloat
+    let nameChart:      String
+    let colorChart:     Color
+    let data:           [Double]
+    let yesterdayData:  [Double]
+    let maxHeight:      CGFloat
 
     let linearGradient = LinearGradient(gradient: Gradient(colors: [Color.accentColor.opacity(0.4),
                                                                     Color.accentColor.opacity(0)]),
@@ -41,14 +42,26 @@ struct ChartMarkGradientViewModel: View
                     
                     Chart
                     {
+                        ForEach(Array(yesterdayData.enumerated()), id: \.offset)
+                        { index, value in
+                            LineMark(x: .value("Index", index),
+                                     y: .value("Value", value),
+                                     series: .value("", "yesterdayData"))
+                            .foregroundStyle(Color.gray)
+                            .lineStyle(.init(dash: [5, 5]))
+                        }
+                        .interpolationMethod(.catmullRom)
+
+                        
                         ForEach(Array(data.enumerated()), id: \.offset)
                         { index, value in
                             LineMark(x: .value("index", index),
                                      y: .value("t", value))
-                            .foregroundStyle(colorChart)
                         }// make line
+                        .foregroundStyle(colorChart)
                         .symbol(.circle)
                         .interpolationMethod(.catmullRom)
+
 
                         ForEach(Array(data.enumerated()), id: \.offset)
                         { index, value in
@@ -58,16 +71,23 @@ struct ChartMarkGradientViewModel: View
                         }
                         .interpolationMethod(.catmullRom)
                         .foregroundStyle(linearGradient)
-
+                        
                         if let chartSelection
                         {
-                            RuleMark(x: .value("Index", chartSelection))
-                                .foregroundStyle(.gray.opacity(0.5))
-                                .annotation(position: .top)
+                            let isNearLeftEdge = chartSelection < 5
+                            let isNearRightEdge = chartSelection > data.count - 5
+                            let yesterdayValue = (yesterdayData.indices.contains(chartSelection)) ? yesterdayData[chartSelection] : 0
+
+                            PointMark(x: .value("Index", chartSelection),
+                                      y: .value("Value", data[chartSelection]))
+                                .symbol(Circle())
+                                .symbolSize(100)
+                                .foregroundStyle(colorChart)
+                                .annotation(position: isNearLeftEdge ? .trailing : isNearRightEdge ? .leading : .top)
                                 {
                                     ZStack
                                     {
-                                        Text("\(data[chartSelection], specifier: "%.2f")")
+                                        Text("Температура о \(chartSelection):00\nСьогодні \(data[chartSelection], specifier: "%.2f") °C \nВчора була \(yesterdayValue, specifier: "%.2f") °C")
                                             .font(.caption)
                                             .fontWeight(.bold)
                                             .padding(6)
@@ -78,14 +98,13 @@ struct ChartMarkGradientViewModel: View
                                             )
                                     }
                                 }
-                        }
+                        }// if selected chart, make pointMark with info about temperature
                     }// Chart
                     .chartLegend(.hidden)
                     .chartXScale(domain: 0 ... max(data.count - 1, 23))
                     .chartYScale(domain: 0 ... (data.max() ?? 1) * 1.5)
                     .chartXSelection(value: $chartSelection)
                     .padding(.vertical, 4)
-                    .padding(.top, chartSelection == nil ? 4 : 2)
                 }// VStack with detail info
             }// Main HStack
             .padding(10)

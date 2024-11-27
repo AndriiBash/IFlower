@@ -286,7 +286,8 @@ struct DeviceControllerView: View
                             {
                                 // uvaga! Used fake data
 
-                                ChartMarkGradientViewModel(nameChart: "Температура", colorChart: Color.accentColor, data: [20, 22, 17, 12, 15, 24, 19, 14, 15, 17, 12, 23, 20, 22, 17, 12, 15, 24, 19, 14, 15, 17, 12, 23], maxHeight: scrollViewChartHeight)
+                                ChartMarkGradientViewModel(nameChart: "Температура", colorChart: Color.accentColor, data: [20, 22, 17, 12, 15, 24, 19, 14, 15, 17, 12, 23, 20, 22, 17, 12, 15, 24, 19, 14, 15, 17, 12, 23],
+                                    yesterdayData: [26, 23, 23, 21, 23, 25, 24, 17, 18, 19, 13, 20, 23, 25, 12, 12, 19, 20, 23, 20, 21, 22, 23, 24], maxHeight: scrollViewChartHeight)
                             }// LazyHGrid
                             .padding(.horizontal)
                         }// ScrollView with the graph build on sensor's
