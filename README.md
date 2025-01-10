@@ -1,5 +1,13 @@
 ### iFlower
 
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://github.com/AndriiBash/IFlower/blob/main/mainIcon.png">
+    <img src="https://github.com/AndriiBash/IFlower/blob/main/mainIcon.png" alt="Gradify start" height="200">
+  </picture>
+</div>
+
+
 The iFlower app is an innovative solution for remotely caring for your plants. With it, you can control watering, monitor soil moisture levels and temperatures in real time, without being near the plant.
 
 An exclusive application for macOS allows you to easily and conveniently control the process of caring for your plant. iFlower works by using Arduino, Bluetooth and various sensors to accurately measure and transmit data about the health of your plant.
