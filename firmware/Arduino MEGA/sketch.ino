@@ -4,6 +4,7 @@
 #include <Adafruit_Sensor.h>
 #include <DHT.h>
 #include <DHT_U.h>
+#include <EEPROM.h>
 
 #line 2 "AUnitTest.ino"
 #include <AUnit.h>
@@ -23,6 +24,9 @@ const int wet = 210;          // value for wet sensor
 #define LED_PIN 13            // LED pin
 #define PIN_SOIL_SENSOR A0    // Soil moisture sensor pin
 #define PIN_PHOTO_SENSOR A5   // Light sensor pin
+
+#define EEPROM_START_ADDRESS 0
+#define TEMPERATURE_ARRAY_SIZE 24
 
 // Serial number and firmware version
 #define serialNumber "0000-0000-0000-0001"
@@ -150,6 +154,9 @@ public:
 class GreenHouse
 {
 private:
+  int temperatures[TEMPERATURE_ARRAY_SIZE];
+  int temperaturesYesterday[TEMPERATURE_ARRAY_SIZE];
+
   ClimateFactors *climateFactors;
   SoilMoistureSensor *moistureSensor;
   AirTemperatureHumiditySensor *tempHumiditySensor;
@@ -163,10 +170,12 @@ public:
     climateFactors = new ClimateFactors();
   }
 
+
   ~GreenHouse()
   {
     delete climateFactors;
   }
+
 
   void collectData()
   {
@@ -176,10 +185,57 @@ public:
     climateFactors->lightLevel = lightSensor->readValue();
   }
 
+
+  void readTemperatureArray() 
+  {
+    for (int i = 0; i < TEMPERATURE_ARRAY_SIZE; i++) 
+    {
+      int address = EEPROM_START_ADDRESS + i * sizeof(int);
+      EEPROM.get(address, temperatures[i]);
+    }
+    
+    int yesterdayStartAddress = EEPROM_START_ADDRESS + TEMPERATURE_ARRAY_SIZE * sizeof(int);
+    for (int i = 0; i < TEMPERATURE_ARRAY_SIZE; i++) 
+    {
+        int address = yesterdayStartAddress + i * sizeof(int);
+        EEPROM.get(address, temperaturesYesterday[i]);
+    }
+  }
+
+
+  void writeTemperatureArray()
+  {
+    for (int i = 0; i < TEMPERATURE_ARRAY_SIZE; i++)
+    {
+      temperatures[i] = random(15, 35);
+      temperaturesYesterday[i] = random(15, 35);
+    }
+
+    for (int i = 0; i < TEMPERATURE_ARRAY_SIZE; i++) 
+    {
+      int address = EEPROM_START_ADDRESS + i * sizeof(int);
+      EEPROM.put(address, temperatures[i]);
+    }
+
+    int yesterdayStartAddress = EEPROM_START_ADDRESS + TEMPERATURE_ARRAY_SIZE * sizeof(int);
+    for (int i = 0; i < TEMPERATURE_ARRAY_SIZE; i++) 
+    {
+        int address = yesterdayStartAddress + i * sizeof(int);
+        EEPROM.put(address, temperaturesYesterday[i]);
+    }
+
+    if (isTestMode)
+    {
+      Serial.println("Temperature array saved to EEPROM.");
+    }
+  }
+
+
   int getSoilMoisture() const { return climateFactors->soilMoisture; }
   int getAirTemperature() const { return climateFactors->airTemperature; }
   int getAirHumidity() const { return climateFactors->airHumidity; }
   int getLightLevel() const { return climateFactors->lightLevel; }
+
 
   void turnOnWateringSystem()
   {
@@ -190,6 +246,7 @@ public:
   {
     wateringSystem->turnOff();
   }
+  
 
   void sendDataToBluetooth()
   {
@@ -202,10 +259,23 @@ public:
     jsonData["lightLevel"] = climateFactors->lightLevel;
     jsonData["isWatering"] = wateringSystem->isEquipmentOn();
 
+    JSONVar temperatureArray;
+    JSONVar yesterdayTemperatureArray;
+    
+    for (int i = 0; i < TEMPERATURE_ARRAY_SIZE; i++)
+    {
+      temperatureArray[i] = temperatures[i];
+      yesterdayTemperatureArray[i] = temperaturesYesterday[i];
+    }
+
+    jsonData["temperatureArray"] = temperatureArray;
+    jsonData["yesterdayTemperatureArray"] = yesterdayTemperatureArray;
+
     String jsonString = JSON.stringify(jsonData);
     BT.print(jsonString);
     BT.print("\n");
   }
+
 
   void processCommandFromBluetooth(const String &data)
   {
@@ -264,6 +334,8 @@ void setup()
 
   greenHouse = new GreenHouse(&soilMoistureSensor, &airSensor, &lightSensor, &wateringSystem);
   greenHouse->collectData();
+  greenHouse->writeTemperatureArray();
+  greenHouse->readTemperatureArray();
   greenHouse->sendDataToBluetooth();
 }
 

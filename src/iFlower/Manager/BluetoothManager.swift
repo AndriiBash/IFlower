@@ -24,7 +24,7 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     @Published var isConnected:                 Bool = false
     @Published var receivedData:                String = ""
 
-    @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(versionFirmware: "0.0", serialNumber: "0000-0000-0000-0000", soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0, isWatering: false)
+    @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(versionFirmware: "0.0", serialNumber: "0000-0000-0000-0000", soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0, isWatering: false, temperatureArray: [], yesterdayTempArray: [])
     
     var peripherals: [CBPeripheral] = []
     var connectedPeripheral: CBPeripheral?
@@ -273,6 +273,16 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                     
                     self.iFlowerMainDevice.isWatering       = isWatering
                     
+                    if let temperatureArray = jsonObject["temperatureArray"] as? [Int]
+                    {
+                        self.iFlowerMainDevice.temperatureArray = temperatureArray
+                    }
+                    
+                    if let yesterdayTempArray = jsonObject["yesterdayTemperatureArray"] as? [Int]
+                    {
+                        self.iFlowerMainDevice.yesterdayTempArray = yesterdayTempArray
+                    }
+
                     print("Received data: \(jsonObject)")
                 }
             }

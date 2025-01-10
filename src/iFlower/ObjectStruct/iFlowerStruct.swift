@@ -9,16 +9,19 @@ import Foundation
 
 struct iFlowerDevice
 {
-    var versionFirmware: String // Версія прошивки девайса
-    var serialNumber: String    // Серійний номер пристрою
+    var versionFirmware: String     // Device firmware version
+    var serialNumber: String        // Serial number of the device
     
-    var soilMoisture: Int       // Волога ґрунту у відцотках
-    var airTemperature: Int     // Температура повітря навколо рослини в градусах
-    var airHumidity: Int        // Вологість повітря у відсотках
-    var lightLevel: Int         // Рівень освітлення у люменах
+    var soilMoisture: Int           // Soil moisture in percent
+    var airTemperature: Int         // Air temperature around the plant in degrees
+    var airHumidity: Int            // Air humidity in percent
+    var lightLevel: Int             // Illumination level in lumens
     
-    var isWatering: Bool        // Чи здійснюється полив росилин
+    var isWatering: Bool            // Are plants watered
     
+    var temperatureArray: [Int]     // Array of temperatures for the last few hours
+    var yesterdayTempArray: [Int]   // Array of temperatures for the last few hours
+
     mutating func clearDeviceData()
     {
         self.versionFirmware = "0.0"
@@ -30,6 +33,8 @@ struct iFlowerDevice
         self.lightLevel = 0
         
         self.isWatering = false
+        
+        self.temperatureArray = []
+        self.yesterdayTempArray = []
     }// mutating func resetSensorValues()
-
 }
