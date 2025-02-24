@@ -24,7 +24,7 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     @Published var isConnected:                 Bool = false
     @Published var receivedData:                String = ""
 
-    @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(versionFirmware: "0.0", serialNumber: "0000-0000-0000-0000", soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0, isWatering: false, temperatureArray: [], yesterdayTempArray: [])
+    @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(versionFirmware: "0.0", serialNumber: "0000-0000-0000-0000", soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0, isWatering: false, maxSoilMoisture: 0, minSoilMoisture: 0, temperatureArray: [], yesterdayTempArray: [])
     
     var peripherals: [CBPeripheral] = []
     var connectedPeripheral: CBPeripheral?

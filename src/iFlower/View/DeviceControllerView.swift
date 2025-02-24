@@ -24,6 +24,11 @@ struct DeviceControllerView: View
     @State private var scrollViewChartHeight:       CGFloat = 190
 
     
+    // for diploma moment
+    @State private var isVentilation:               Bool = false
+    @State private var isLamp:                      Bool = false
+
+    
     var body: some View
     {
         VStack 
@@ -240,7 +245,85 @@ struct DeviceControllerView: View
                                     .frame(maxHeight: scrollViewActionsHeight)
                                     .cornerRadius(20)
                                     .shadow(radius: 5)
+                                }// button for on watering
+                                .buttonStyle(PlainButtonStyle())
+                                
+                                Button
+                                {
+                                    withAnimation(Animation.easeInOut(duration: 0.25))
+                                    {
+                                        self.isVentilation.toggle()
+                                    }
                                 }
+                                label:
+                                {
+                                    ZStack
+                                    {
+                                        Color(self.isVentilation ? "MainBGUsedColor" : "MainBlurBGColor").opacity(0.25)
+
+                                        HStack
+                                        {
+                                            Image(systemName: self.isVentilation ? "window.ceiling" : "window.ceiling.closed")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 20, height: 20)
+                                                .foregroundColor(self.isVentilation ? Color.accentColor : Color.gray)
+                                            
+                                            VStack(alignment: .leading)
+                                            {
+                                                Text(self.isVentilation ? "Закрити вентиляцію" : "Відкрити вентиляцію")
+                                                    .font(.headline)
+                                                    .fontWeight(.semibold)
+                                                    .foregroundColor(Color.primary)
+                                                    .padding(.vertical)
+                                            }// VStack with detail info
+                                            .padding(.leading, 2)
+                                        }// Main HStack
+                                        .padding(10)
+                                    }// ZStack with info
+                                    .frame(maxHeight: scrollViewActionsHeight)
+                                    .cornerRadius(20)
+                                    .shadow(radius: 5)
+                                }// button for open ventilation
+                                .buttonStyle(PlainButtonStyle())
+                                
+                                Button
+                                {
+                                    withAnimation(Animation.easeInOut(duration: 0.25))
+                                    {
+                                        self.isLamp.toggle()
+                                    }
+                                }
+                                label:
+                                {
+                                    ZStack
+                                    {
+                                        Color(self.isLamp ? "MainBGUsedColor" : "MainBlurBGColor").opacity(0.25)
+
+                                        HStack
+                                        {
+                                            Image(systemName: self.isLamp ? "lightbulb.max" : "lightbulb.slash")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 20, height: 20)
+                                                .foregroundColor(self.isVentilation ? Color.accentColor : Color.gray)
+                                            
+                                            VStack(alignment: .leading)
+                                            {
+                                                Text(self.isLamp ? "Виключити освітлення" : "Включити освітлення")
+                                                    .font(.headline)
+                                                    .fontWeight(.semibold)
+                                                    .foregroundColor(Color.primary)
+                                                    .padding(.vertical)
+                                            }// VStack with detail info
+                                            .padding(.leading, 2)
+                                        }// Main HStack
+                                        .padding(10)
+                                    }// ZStack with info
+                                    .frame(maxHeight: scrollViewActionsHeight)
+                                    .cornerRadius(20)
+                                    .shadow(radius: 5)
+                                }// button for on lamp
                                 .buttonStyle(PlainButtonStyle())
                             }// LazyHGrid
                             .padding()
@@ -295,12 +378,8 @@ struct DeviceControllerView: View
                             .padding(.horizontal)
                         }// ScrollView with the graph build on sensor's
                         .frame(height: scrollViewChartHeight)
-                        
-                        Spacer()
-                        
-                        //Text("Device Name: \(device.name)")
-                        //Text("Device Address: \(device.macAddress)")
-                        
+                                                
+                        /*
                         if bluetoothManager.isConnected
                         {
                             Text("connect")
@@ -333,6 +412,9 @@ struct DeviceControllerView: View
                         {
                             Text("DISCONNECT!")
                         }
+                         */
+                        
+                        
                     }// ScrollView with main info
                 }// if process connecting
                 else

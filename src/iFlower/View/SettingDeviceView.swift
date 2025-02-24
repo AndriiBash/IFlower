@@ -66,21 +66,6 @@ struct SettingDeviceView: View
                                             .padding(.horizontal, 12)
                                     }
                                 })// textField for name device
-                        
-                        VStack
-                        {
-                            TextField("Data to send", text: $dataToSend)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding()
-                            
-                            Button(action: {
-                                bluetoothManager.sendData(dataToSend)
-                            }) {
-                                Text("Send Data")
-                                    .foregroundColor(Color.accentColor)
-                            }
-                            .padding()
-                        }// VStack with info
                     }// Main Section
                     
                     

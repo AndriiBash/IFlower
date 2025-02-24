@@ -18,7 +18,9 @@ struct iFlowerDevice
     var lightLevel: Int             // Illumination level in lumens
     
     var isWatering: Bool            // Are plants watered
-    
+    var maxSoilMoisture: Int        // Maximum soil moisture level in percent
+    var minSoilMoisture: Int        // Minimum soil moisture level in percent
+
     var temperatureArray: [Int]     // Array of temperatures for the last few hours
     var yesterdayTempArray: [Int]   // Array of temperatures for the last few hours
 
@@ -33,6 +35,8 @@ struct iFlowerDevice
         self.lightLevel = 0
         
         self.isWatering = false
+        self.maxSoilMoisture = 0
+        self.minSoilMoisture = 0
         
         self.temperatureArray = []
         self.yesterdayTempArray = []
