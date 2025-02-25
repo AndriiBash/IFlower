@@ -24,7 +24,7 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     @Published var isConnected:                 Bool = false
     @Published var receivedData:                String = ""
 
-    @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(versionFirmware: "0.0", serialNumber: "0000-0000-0000-0000", soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0, isWatering: false, maxSoilMoisture: 0, minSoilMoisture: 0, temperatureArray: [], yesterdayTempArray: [])
+    @Published var iFlowerMainDevice: iFlowerDevice = iFlowerDevice(versionFirmware: "0.0", serialNumber: "0000-0000-0000-0000", soilMoisture: 0, airTemperature: 0, airHumidity: 0, lightLevel: 0, isWatering: false, isEditSoilMisture: false, maxSoilMoisture: 0, minSoilMoisture: 0, temperatureArray: [], yesterdayTempArray: [])
     
     var peripherals: [CBPeripheral] = []
     var connectedPeripheral: CBPeripheral?
@@ -258,7 +258,9 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                    let airHumidity = jsonObject["airHumidity"] as? Int,
                    let lightLevel = jsonObject["lightLevel"] as? Int,
                    let airTemperature = jsonObject["airTemperature"] as? Int,
-                   let isWatering = jsonObject["isWatering"] as? Bool
+                   let isWatering = jsonObject["isWatering"] as? Bool,
+                   let minSoilMoisture = jsonObject["minSoilMoisture"] as? Int,
+                   let maxSoilMoisture = jsonObject["maxSoilMoisture"] as? Int
                 {
                     //DispatchQueue.main.async
                     
@@ -270,6 +272,11 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
                     self.iFlowerMainDevice.lightLevel       = lightLevel
                     self.iFlowerMainDevice.airTemperature   = airTemperature
                     self.iFlowerMainDevice.lightLevel       = lightLevel
+                    
+                    if !iFlowerMainDevice.isEditSoilMisture {
+                        self.iFlowerMainDevice.minSoilMoisture  = minSoilMoisture
+                        self.iFlowerMainDevice.maxSoilMoisture  = maxSoilMoisture
+                    }
                     
                     self.iFlowerMainDevice.isWatering       = isWatering
                     

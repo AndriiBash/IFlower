@@ -27,18 +27,6 @@ struct ContentView: View
             {
                 Section("Головне")
                 {
-                    NavigationLink(destination: EmptyView())
-                    {
-                        Label("Автоматизація", systemImage: "deskclock")
-                    }
-                    .tag("Автоматизація")
-
-                    NavigationLink(destination: EmptyView())
-                    {
-                        Label("Дім", systemImage: "house")
-                    }
-                    .tag("Дім")
-
                     NavigationLink(destination: BluetoothConnectView(bluetoothManager: bluetoothManager, activeTab: $activeTab))
                     {
                         Label("Bluetooth сканер", systemImage: "antenna.radiowaves.left.and.right")

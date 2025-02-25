@@ -13,11 +13,12 @@ struct DeviceControllerView: View
     @ObservedObject var bluetoothManager: BluetoothManager
     
     @State private var isShowSetting:               Bool = false
+    
     @State private var isShowDeviceSensor:          Bool = true
     @State private var isShowDeviceInfo:            Bool = true
     @State private var isShowActions:               Bool = true
     @State private var isShowCharts:                Bool = true
-
+    
     @State private var scrollViewSensorHeight:      CGFloat = 55
     @State private var scrollViewActionsHeight:     CGFloat = 65
     @State private var scrollViewInfoHeight:        CGFloat = 120
@@ -152,6 +153,18 @@ struct DeviceControllerView: View
                             LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
                             {
                                 RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: String(bluetoothManager.iFlowerMainDevice.soilMoisture) + "%", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
+                                    .contextMenu
+                                    {
+                                        Button
+                                        {
+                                            self.bluetoothManager.iFlowerMainDevice.isEditSoilMisture.toggle()
+                                        }
+                                        label:
+                                        {
+                                            Text("Редагувати граничні межі вологості ґрунту")
+                                            Image(systemName: "arrow.trianglehead.left.and.right.righttriangle.left.righttriangle.right.fill")
+                                        }
+                                    }
 
                                 RowDeviceInfoViewModel(imageName: "thermometer.medium", mainText: "Температура", bodyText: String(bluetoothManager.iFlowerMainDevice.airTemperature) + "°C", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
                                 
@@ -306,7 +319,7 @@ struct DeviceControllerView: View
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: 20, height: 20)
-                                                .foregroundColor(self.isVentilation ? Color.accentColor : Color.gray)
+                                                .foregroundColor(self.isLamp ? Color.accentColor : Color.gray)
                                             
                                             VStack(alignment: .leading)
                                             {
@@ -369,7 +382,7 @@ struct DeviceControllerView: View
                             {
                                 // uvaga! Used fake data
 
-                                ChartMarkGradientViewModel(nameChart: "Температура",
+                                ChartMarkGradientViewModel(nameChart: "Температура повітря",
                                     colorChart: Color.accentColor,
                                     data: bluetoothManager.iFlowerMainDevice.temperatureArray.map { Double($0) },
                                     yesterdayData: bluetoothManager.iFlowerMainDevice.yesterdayTempArray.map { Double($0) },
@@ -487,6 +500,59 @@ struct DeviceControllerView: View
         .sheet(isPresented: $isShowSetting)
         {
             SettingDeviceView(bluetoothManager: bluetoothManager, isShowWindow: $isShowSetting, device: device)
+        }
+        .sheet(isPresented: $bluetoothManager.iFlowerMainDevice.isEditSoilMisture)
+        {
+            NavigationView
+            {
+                VStack
+                {
+                    HStack
+                    {
+                        Text("Редагування граничних меж вологості ґрунту")
+                            .fontWeight(.bold)
+                            .foregroundColor(Color.accentColor)
+                        
+                    }// HStack header
+                    .padding(.top, 16)
+                    
+                    VStack
+                    {
+                        RangedSliderView(minValue: $bluetoothManager.iFlowerMainDevice.minSoilMoisture, maxValue: $bluetoothManager.iFlowerMainDevice.maxSoilMoisture, bounds: 1...99)
+                    }// main Form with setting for edit water
+                    .padding()
+                    .padding(.horizontal, 12)
+                    
+                    HStack
+                    {
+                        Spacer()
+                        
+                        Button
+                        {
+                            let data: [String: Int] = [
+                                "min": self.bluetoothManager.iFlowerMainDevice.minSoilMoisture,
+                                "max": self.bluetoothManager.iFlowerMainDevice.maxSoilMoisture
+                            ]
+
+                            if let jsonData = try? JSONSerialization.data(withJSONObject: data, options: []),
+                                   let jsonString = String(data: jsonData, encoding: .utf8) {
+                                    self.bluetoothManager.sendData(jsonString + "\n")
+                                    print("send data: " + jsonString)
+                                }
+                            
+                            self.bluetoothManager.iFlowerMainDevice.isEditSoilMisture.toggle()
+                        }
+                        label:
+                        {
+                            Text("Зберегти зміни")
+                        }// button for send data edit water
+                        .keyboardShortcut(.defaultAction)
+                        .padding()
+                    }
+                }// main VSTack
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }// main NavigationView for edit border watering
+            .frame(width: 450, height: 150)
         }
         .onAppear
         {

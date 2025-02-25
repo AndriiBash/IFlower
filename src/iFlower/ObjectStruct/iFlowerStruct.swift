@@ -18,6 +18,7 @@ struct iFlowerDevice
     var lightLevel: Int             // Illumination level in lumens
     
     var isWatering: Bool            // Are plants watered
+    var isEditSoilMisture: Bool     // Are edit values Minimum and Maximum soil moisture level
     var maxSoilMoisture: Int        // Maximum soil moisture level in percent
     var minSoilMoisture: Int        // Minimum soil moisture level in percent
 
@@ -35,6 +36,7 @@ struct iFlowerDevice
         self.lightLevel = 0
         
         self.isWatering = false
+        self.isEditSoilMisture = false
         self.maxSoilMoisture = 0
         self.minSoilMoisture = 0
         

@@ -120,6 +120,9 @@ struct ClimateFactors
   int airTemperature;
   int airHumidity;
   int lightLevel;
+
+  int maxSoilMoisture;  // Maximum soil moisture value
+  int minSoilMoisture;  // Minimum soil moisture value
 };
 
 // Equipment Class
@@ -247,6 +250,22 @@ public:
     wateringSystem->turnOff();
   }
   
+  void writeSoilMoistureValues()
+  {
+    int soilMoistureStartAddress = EEPROM_START_ADDRESS + TEMPERATURE_ARRAY_SIZE * sizeof(int) + TEMPERATURE_ARRAY_SIZE * sizeof(int);
+
+    EEPROM.put(soilMoistureStartAddress, climateFactors->minSoilMoisture);
+    EEPROM.put(soilMoistureStartAddress + sizeof(int), climateFactors->maxSoilMoisture);
+  }
+
+  void readSoilMoistureValues()
+  {
+    int soilMoistureStartAddress = EEPROM_START_ADDRESS + TEMPERATURE_ARRAY_SIZE * sizeof(int) + TEMPERATURE_ARRAY_SIZE * sizeof(int);
+
+    EEPROM.get(soilMoistureStartAddress, climateFactors->minSoilMoisture);
+    EEPROM.get(soilMoistureStartAddress + sizeof(int), climateFactors->maxSoilMoisture);
+  }
+
 
   void sendDataToBluetooth()
   {
@@ -258,6 +277,9 @@ public:
     jsonData["airHumidity"] = climateFactors->airHumidity;
     jsonData["lightLevel"] = climateFactors->lightLevel;
     jsonData["isWatering"] = wateringSystem->isEquipmentOn();
+
+    jsonData["minSoilMoisture"] = climateFactors->minSoilMoisture;
+    jsonData["maxSoilMoisture"] = climateFactors->maxSoilMoisture;
 
     JSONVar temperatureArray;
     JSONVar yesterdayTemperatureArray;
@@ -279,6 +301,8 @@ public:
 
   void processCommandFromBluetooth(const String &data)
   {
+    Serial.println("data received:" + data);
+
     if (data == "turnOnWatering")
     {
       turnOnWateringSystem();
@@ -294,7 +318,26 @@ public:
     }
     else
     {
-      Serial.println("Unknown command received.");
+      JSONVar doc = JSON.parse(data);
+
+      if (doc.hasOwnProperty("max") && doc.hasOwnProperty("min"))
+      {
+        int maxSM = doc["max"];
+        int minSM = doc["min"];
+
+        climateFactors->maxSoilMoisture = maxSM;
+        climateFactors->minSoilMoisture = minSM;
+
+        writeSoilMoistureValues();
+        Serial.print("Max Soil Moisture: ");
+        Serial.println(climateFactors->maxSoilMoisture);
+        Serial.print("Min Soil Moisture: ");
+        Serial.println(climateFactors->minSoilMoisture);
+      }
+      else
+      {
+        Serial.println("Unknown command received.");
+      }
     }
   }
 
@@ -336,6 +379,7 @@ void setup()
   greenHouse->collectData();
   greenHouse->writeTemperatureArray();
   greenHouse->readTemperatureArray();
+  greenHouse->readSoilMoistureValues();
   greenHouse->sendDataToBluetooth();
 }
 

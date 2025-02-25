@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B51C2B162D6CC47D006FDC21 /* RangedSliderViewBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B51C2B152D6CC47D006FDC21 /* RangedSliderViewBuilder.swift */; };
 		B53B9F202CEA066400EC162C /* ChartMarkGradientViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53B9F1F2CEA066400EC162C /* ChartMarkGradientViewModel.swift */; };
 		B5447F6F2C40036C00EDD693 /* DeviceControllerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5447F6E2C40036C00EDD693 /* DeviceControllerView.swift */; };
 		B55B8A432C639E0B00F9E916 /* SettingDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B55B8A422C639E0B00F9E916 /* SettingDeviceView.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B51C2B152D6CC47D006FDC21 /* RangedSliderViewBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RangedSliderViewBuilder.swift; sourceTree = "<group>"; };
 		B53B9F1F2CEA066400EC162C /* ChartMarkGradientViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChartMarkGradientViewModel.swift; sourceTree = "<group>"; };
 		B5447F6E2C40036C00EDD693 /* DeviceControllerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceControllerView.swift; sourceTree = "<group>"; };
 		B55B8A422C639E0B00F9E916 /* SettingDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingDeviceView.swift; sourceTree = "<group>"; };
@@ -77,6 +79,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B51C2B172D6CC482006FDC21 /* ViewBuilder */ = {
+			isa = PBXGroup;
+			children = (
+				B51C2B152D6CC47D006FDC21 /* RangedSliderViewBuilder.swift */,
+			);
+			path = ViewBuilder;
+			sourceTree = "<group>";
+		};
 		B55B8A462C64DF6800F9E916 /* VisualEffects */ = {
 			isa = PBXGroup;
 			children = (
@@ -166,6 +176,7 @@
 		B5F653A82C2B07850097EFBA /* View */ = {
 			isa = PBXGroup;
 			children = (
+				B51C2B172D6CC482006FDC21 /* ViewBuilder */,
 				B5F6539A2C2B075F0097EFBA /* ContentView.swift */,
 				B5447F6E2C40036C00EDD693 /* DeviceControllerView.swift */,
 				B55B8A422C639E0B00F9E916 /* SettingDeviceView.swift */,
@@ -297,6 +308,7 @@
 				B55B8A4B2C66803700F9E916 /* RowDeviceInfoViewModel.swift in Sources */,
 				B57882362C3AE34400F00AC5 /* StartView.swift in Sources */,
 				B55B8A452C64DF5E00F9E916 /* BlurBehindWindow.swift in Sources */,
+				B51C2B162D6CC47D006FDC21 /* RangedSliderViewBuilder.swift in Sources */,
 				B57882382C3AEA1600F00AC5 /* RowStartInfoViewModel.swift in Sources */,
 				B55B8A482C64EE8000F9E916 /* DeviceStruct.swift in Sources */,
 				B55B8A432C639E0B00F9E916 /* SettingDeviceView.swift in Sources */,
