@@ -30,7 +30,7 @@ const int wet = 210;          // value for wet sensor
 
 // Serial number and firmware version
 #define serialNumber "0000-0000-0000-0001"
-#define versionFirmware "0.4a"
+#define versionFirmware "0.5a"
 
 #define isTestMode 0
 
@@ -311,11 +311,13 @@ public:
     {
       turnOffWateringSystem();
     }
+    /*
     else if (data == "getStatus")
     {
       collectData();
       sendDataToBluetooth();
     }
+    */
     else
     {
       JSONVar doc = JSON.parse(data);
