@@ -204,7 +204,7 @@ struct DeviceControllerView: View
                             .padding(.top)
                             .padding(.leading)
                             
-                            Spacer()iFlowerDevice
+                            Spacer()
                         }//HStack with button for open or close scrollView with info from sensor's
                         
                         ScrollView(.horizontal, showsIndicators: false)
