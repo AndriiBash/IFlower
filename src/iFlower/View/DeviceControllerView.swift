@@ -94,7 +94,7 @@ struct DeviceControllerView: View
                                                 .font(.headline)
                                                 .fontWeight(.semibold)
                                                 .foregroundColor(Color.primary)
-
+                                            
                                             Text("Версія прошивки: " + bluetoothManager.iFlowerMainDevice.versionFirmware)
                                                 .font(.subheadline)
                                                 .foregroundColor(.secondary)
@@ -102,6 +102,65 @@ struct DeviceControllerView: View
                                             Text("s/n. " + bluetoothManager.iFlowerMainDevice.serialNumber)
                                                 .font(.subheadline)
                                                 .foregroundColor(.secondary)
+                                            
+                                            if bluetoothManager.iFlowerMainDevice.soilMoisture != 0 &&
+                                               bluetoothManager.iFlowerMainDevice.airTemperature != 0 &&
+                                               bluetoothManager.iFlowerMainDevice.airHumidity != 0 &&
+                                                bluetoothManager.iFlowerMainDevice.lightLevel != 0 {
+                                                
+                                                let T_max: Double = 10.0 // Максимально допустимий час поливу (наприклад, 10 секунд)
+                                                let k: Double = 0.3      // Емпіричний коефіцієнт випаровування
+                                                
+                                                // Отримання даних з пристрою
+                                                let soil = Double(bluetoothManager.iFlowerMainDevice.soilMoisture)
+                                                let temp = Double(bluetoothManager.iFlowerMainDevice.airTemperature)
+                                                let humidity = Double(bluetoothManager.iFlowerMainDevice.airHumidity)
+                                                let lightRaw = Double(bluetoothManager.iFlowerMainDevice.lightLevel)
+                                                
+                                                // Нормалізація освітлення (наприклад, максимум 1000)
+                                                let light = min(lightRaw / 1000.0, 1.0)
+                                                
+                                                // Вагові коефіцієнти
+                                                let w1: Double = 0.35
+                                                let w2: Double = 0.25
+                                                let w3: Double = 0.2
+                                                let w4: Double = 0.2
+                                                
+                                                // Розрахунок індексу зрошення W
+                                                let W = w1 * (1 - soil / 100) +
+                                                w2 * (temp / 100) +
+                                                w3 * (1 - humidity / 100) +
+                                                w4 * (1 - light)
+                                                
+                                                // Обмеження W в межах від 0 до 1
+                                                let W_clamped = max(0.0, min(W, 1.0))
+                                                
+                                                // Розрахунок тривалості поливу
+                                                let T_polivu = W_clamped * T_max
+                                                
+                                                // Розрахунок ΔS (зміна вологості ґрунту)
+                                                let T_norm = temp / 100.0
+                                                let H_norm = humidity / 100.0
+                                                let deltaS = -k * (T_norm * (1.0 - H_norm) * light) // ΔS у частках, можна *100 для %
+                                                
+                                                
+                                                // Відображення результатів
+                                                Text("Індекс зрошення W: \(String(format: "%.3f", W_clamped))")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.secondary)
+                                                
+                                                Text("Тривалість поливу: \(String(format: "%.1f", T_polivu)) сек.")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.secondary)
+                                                                                                
+                                                Text("Прогноз втрати вологості за 1 годину: \(String(format: "%.2f", deltaS * 100))%")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.secondary)
+                                            } else {
+                                                Text("Очікується надходження даних з сенсорів...")
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.orange)
+                                            }
                                         }// VStack with detail info
                                         .padding(.leading, 2)
                                     }// Main HStack
@@ -145,14 +204,17 @@ struct DeviceControllerView: View
                             .padding(.top)
                             .padding(.leading)
                             
-                            Spacer()
+                            Spacer()iFlowerDevice
                         }//HStack with button for open or close scrollView with info from sensor's
                         
                         ScrollView(.horizontal, showsIndicators: false)
                         {
                             LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
                             {
-                                RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту", bodyText: String(bluetoothManager.iFlowerMainDevice.soilMoisture) + "%", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
+                                RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту",
+                                                       bodyText: String(bluetoothManager.iFlowerMainDevice.soilMoisture) + "%",
+                                                       colorImage: Color.accentColor,
+                                                       maxHeight: scrollViewSensorHeight)
                                     .contextMenu
                                     {
                                         Button
@@ -214,7 +276,6 @@ struct DeviceControllerView: View
                             {
                                 Button
                                 {
-                                    // добавить проверку на влажность почвы, и в случае большой влаге выдавать ошибку пользователю и не возможностью включить полив, использовать алерт
                                     withAnimation(Animation.easeInOut(duration: 0.25))
                                     {
                                         self.bluetoothManager.iFlowerMainDevice.isWatering.toggle()
@@ -343,7 +404,7 @@ struct DeviceControllerView: View
                         }// ScrollView with the main information iFlower device
                         .frame(height: scrollViewActionsHeight)
                         
-                        
+            
                         HStack
                         {
                             Button
@@ -503,10 +564,8 @@ struct DeviceControllerView: View
         }
         .sheet(isPresented: $bluetoothManager.iFlowerMainDevice.isEditSoilMisture)
         {
-            NavigationView
+            VStack
             {
-                VStack
-                {
                     HStack
                     {
                         Text("Редагування граничних меж вологості ґрунту")
@@ -550,9 +609,8 @@ struct DeviceControllerView: View
                         .padding()
                     }
                 }// main VSTack
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }// main NavigationView for edit border watering
-            .frame(width: 450, height: 150)
+                .frame(width: 450, height: 150)
+                .background(BlurBehindWindow())
         }
         .onAppear
         {
@@ -571,3 +629,4 @@ struct DeviceControllerView: View
         }
     }
 }
+

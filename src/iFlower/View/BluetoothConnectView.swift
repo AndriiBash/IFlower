@@ -54,7 +54,7 @@ struct BluetoothConnectView: View
                         {
                             ProgressView()
                                 .controlSize(.small)
-
+                            
                             Text("Триває пошук...")
                         }// HStack with ProgressView
                     }
@@ -125,6 +125,7 @@ struct BluetoothConnectView: View
                             .frame(alignment: .center)
                     }
                     .buttonStyle(PlainButtonStyle())
+                    
                 }// HStack with text for open bluetooth help
             }
         }
@@ -132,3 +133,5 @@ struct BluetoothConnectView: View
         .background(bluetoothManager.bluetoothEnabled ? Color("SecondBGColor") : Color.clear)
     }
 }
+
+

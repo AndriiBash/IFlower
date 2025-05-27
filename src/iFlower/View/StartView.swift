@@ -33,11 +33,20 @@ struct StartView: View
 
             VStack(spacing: 15)
             {
-                RowStartInfoViewModel(isAnimated: $animateRowIndo, imageName: "sprinkler.and.droplets", mainText: String(localized: "Догляд за рослиною"), bodyText: "iFlower дозволяє дистанційно займатись поливом рослини")
+                RowStartInfoViewModel(isAnimated: $animateRowIndo,
+                                      imageName: "sprinkler.and.droplets",
+                                      mainText: String(localized: "Догляд за рослиною"),
+                                      bodyText: "iFlower дозволяє дистанційно займатись поливом рослини")
 
-                RowStartInfoViewModel(isAnimated: $animateRowIndo, imageName: "thermometer.sun", mainText: String(localized: "Отримання даних"), bodyText: "Завдяки застосунку у Вас є можливість слідкуванням за датчиками, які надають інформацію про вологість повітря, ґрунту тощо")
+                RowStartInfoViewModel(isAnimated: $animateRowIndo,
+                                      imageName: "thermometer.sun",
+                                      mainText: String(localized: "Отримання даних"),
+                                      bodyText: "Завдяки застосунку у Вас є можливість слідкуванням за датчиками, які надають інформацію про вологість повітря, ґрунту тощо")
 
-                RowStartInfoViewModel(isAnimated: $animateRowIndo, imageName: "chart.xyaxis.line", mainText: String(localized: "Графічний аналіз"), bodyText: "Застосунок надає можливість перегляду зміни температури або вологості з пливом часу")
+                RowStartInfoViewModel(isAnimated: $animateRowIndo,
+                                      imageName: "chart.xyaxis.line",
+                                      mainText: String(localized: "Графічний аналіз"),
+                                      bodyText: "Застосунок надає можливість перегляду зміни температури або вологості з пливом часу")
             }// VStack with main info about app
             .padding(.top, 30)
             .padding(.horizontal, 12)

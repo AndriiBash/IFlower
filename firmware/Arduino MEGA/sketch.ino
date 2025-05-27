@@ -12,8 +12,8 @@ using namespace aunit;
 
 // Constants
 const unsigned long SERIAL_BAUD_RATE = 9600;
-const int dry = 510;          // value for dry sensor
-const int wet = 210;          // value for wet sensor
+const int dry = 1023;          // value for dry sensor
+const int wet = 350;          // value for wet sensor
 
 #define BT Serial3            // Bluetooth serial
 #define DHTTYPE DHT11         // DHT11 sensor type
@@ -54,8 +54,9 @@ public:
 
   int readValue() override
   {
-    int moistureSensorValue = analogRead(pin);
-    return map(moistureSensorValue, wet, dry, 100, 0);
+    int rawValue = analogRead(pin);
+    rawValue = constrain(rawValue, wet, dry);
+    return map(rawValue, wet, dry, 100, 0);
   }
 };
 
@@ -66,34 +67,28 @@ private:
   DHT_Unified dht;
 
 public:
-  AirTemperatureHumiditySensor(int pin, int dhtType) : Sensor(pin), dht(pin, dhtType)
-  {
+  AirTemperatureHumiditySensor(int pin, int dhtType) : Sensor(pin), dht(pin, dhtType) {
     dht.begin();
   }
 
-  int readValue() override
-  {
+  int readValue() override {
     return 0; // Not used, temperature and humidity have separate methods
   }
 
-  int readTemperature()
-  {
+  int readTemperature() {
     sensors_event_t event;
     dht.temperature().getEvent(&event);
-    if (isnan(event.temperature))
-    {
+    if (isnan(event.temperature)) {
       Serial.println(F("Error reading temperature!"));
       return 0;
     }
     return round(event.temperature);
   }
 
-  int readHumidity()
-  {
+  int readHumidity() {
     sensors_event_t event;
     dht.humidity().getEvent(&event);
-    if (isnan(event.relative_humidity))
-    {
+    if (isnan(event.relative_humidity)) {
       Serial.println(F("Error reading humidity!"));
       return 0;
     }
@@ -311,13 +306,6 @@ public:
     {
       turnOffWateringSystem();
     }
-    /*
-    else if (data == "getStatus")
-    {
-      collectData();
-      sendDataToBluetooth();
-    }
-    */
     else
     {
       JSONVar doc = JSON.parse(data);
