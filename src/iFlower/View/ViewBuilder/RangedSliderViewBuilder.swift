@@ -38,7 +38,8 @@ struct RangedSliderView: View {
                 let leftThumbLocation = CGFloat(minValue - sliderBounds.lowerBound) * stepWidthInPixel
                 let rightThumbLocation = CGFloat(maxValue - sliderBounds.lowerBound) * stepWidthInPixel
                 
-                lineBetweenThumbs(from: .init(x: leftThumbLocation, y: sliderViewYCenter), to: .init(x: rightThumbLocation, y: sliderViewYCenter))
+                lineBetweenThumbs(from: .init(x: leftThumbLocation, y: sliderViewYCenter),
+                                  to: .init(x: rightThumbLocation, y: sliderViewYCenter))
                 
                 thumbView(position: CGPoint(x: leftThumbLocation, y: sliderViewYCenter), value: minValue)
                     .highPriorityGesture(DragGesture().onChanged { dragValue in

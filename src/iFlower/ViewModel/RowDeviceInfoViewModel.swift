@@ -15,22 +15,18 @@ struct RowDeviceInfoViewModel: View
     let colorImage: Color
     let maxHeight:  CGFloat
 
-    var body: some View
-    {
-        ZStack
-        {
+    var body: some View {
+        ZStack {
             Color("MainBlurBGColor").opacity(0.25)
             
-            HStack
-            {
+            HStack {
                 Image(systemName: imageName)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 20, height: 20)
                     .foregroundColor(colorImage)
                 
-                VStack(alignment: .leading)
-                {
+                VStack(alignment: .leading) {
                     Text(mainText)
                         .font(.headline)
                         .fontWeight(.semibold)
@@ -48,3 +44,4 @@ struct RowDeviceInfoViewModel: View
         .shadow(radius: 5)
     }
 }
+

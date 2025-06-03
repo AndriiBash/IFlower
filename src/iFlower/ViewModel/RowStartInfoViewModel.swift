@@ -16,23 +16,19 @@ struct RowStartInfoViewModel: View
     let mainText:  String
     let bodyText:  String
     
-    var body: some View
-    {
-        HStack
-        {
+    var body: some View {
+        HStack {
             Image(systemName: imageName)
                 .resizable()
                 .foregroundColor(Color.accentColor)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 35, height: 35, alignment: .center)
                 .symbolEffect(.bounce, value: startAnimate)
-                .onAppear
-                {
+                .onAppear {
                     animateIcon()
                 }
             
-            VStack
-            {
+            VStack {
                 Text("\(mainText)")
                     .font(.body.bold())
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -51,19 +47,17 @@ struct RowStartInfoViewModel: View
         .padding(.horizontal, 12)
     }// body
     
-    func animateIcon()
-    {
-        if isAnimated
-        {
+    func animateIcon() {
+        if isAnimated {
             startAnimate.toggle()
             
-            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 5)
-            {
-                DispatchQueue.main.async
-                {
+            DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 5) {
+                DispatchQueue.main.async {
                     animateIcon()
                 }
             }
         }
     }// animateIcon func}
 }
+
+

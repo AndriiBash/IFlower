@@ -23,16 +23,12 @@ struct ChartMarkGradientViewModel: View
                                                                     startPoint: .top,
                                                                     endPoint: .bottom)
 
-    var body: some View
-    {
-        ZStack
-        {
+    var body: some View {
+        ZStack {
             Color("MainBlurBGColor").opacity(0.25)
             
-            HStack
-            {
-                VStack(alignment: .leading)
-                {
+            HStack {
+                VStack(alignment: .leading) {
                     Text(nameChart)
                         .font(.headline)
                         .fontWeight(.semibold)
@@ -40,8 +36,7 @@ struct ChartMarkGradientViewModel: View
                         .padding(.horizontal, 120)
                         .padding(.top, 2)
                     
-                    Chart
-                    {
+                    Chart {
                         ForEach(Array(yesterdayData.enumerated()), id: \.offset)
                         { index, value in
                             LineMark(x: .value("Index", index),

@@ -31,8 +31,6 @@ class BluetoothManager: NSObject, ObservableObject, CBCentralManagerDelegate, CB
     var targetCharacteristic: CBCharacteristic?
     var scanTimer: Timer?
     var discoveredDeviceSet: Set<String> = []
-
-    // template
     var accumulatedData = Data()
     
     override init()

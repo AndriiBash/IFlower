@@ -110,34 +110,27 @@ struct DeviceControllerView: View
                                                 
                                                 let T_max: Double = 10.0 // Максимально допустимий час поливу (наприклад, 10 секунд)
                                                 let k: Double = 0.3      // Емпіричний коефіцієнт випаровування
-                                                
                                                 // Отримання даних з пристрою
                                                 let soil = Double(bluetoothManager.iFlowerMainDevice.soilMoisture)
                                                 let temp = Double(bluetoothManager.iFlowerMainDevice.airTemperature)
                                                 let humidity = Double(bluetoothManager.iFlowerMainDevice.airHumidity)
                                                 let lightRaw = Double(bluetoothManager.iFlowerMainDevice.lightLevel)
-                                                
                                                 // Нормалізація освітлення (наприклад, максимум 1000)
                                                 let light = min(lightRaw / 1000.0, 1.0)
-                                                
                                                 // Вагові коефіцієнти
                                                 let w1: Double = 0.35
                                                 let w2: Double = 0.25
                                                 let w3: Double = 0.2
                                                 let w4: Double = 0.2
-                                                
                                                 // Розрахунок індексу зрошення W
                                                 let W = w1 * (1 - soil / 100) +
                                                 w2 * (temp / 100) +
                                                 w3 * (1 - humidity / 100) +
                                                 w4 * (1 - light)
-                                                
                                                 // Обмеження W в межах від 0 до 1
                                                 let W_clamped = max(0.0, min(W, 1.0))
-                                                
                                                 // Розрахунок тривалості поливу
                                                 let T_polivu = W_clamped * T_max
-                                                
                                                 // Розрахунок ΔS (зміна вологості ґрунту)
                                                 let T_norm = temp / 100.0
                                                 let H_norm = humidity / 100.0
@@ -207,36 +200,47 @@ struct DeviceControllerView: View
                             Spacer()
                         }//HStack with button for open or close scrollView with info from sensor's
                         
-                        ScrollView(.horizontal, showsIndicators: false)
-                        {
-                            LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
-                            {
-                                RowDeviceInfoViewModel(imageName: "drop.fill", mainText: "Вологість ґрунту",
-                                                       bodyText: String(bluetoothManager.iFlowerMainDevice.soilMoisture) + "%",
-                                                       colorImage: Color.accentColor,
-                                                       maxHeight: scrollViewSensorHeight)
-                                    .contextMenu
-                                    {
-                                        Button
-                                        {
-                                            self.bluetoothManager.iFlowerMainDevice.isEditSoilMisture.toggle()
-                                        }
-                                        label:
-                                        {
-                                            Text("Редагувати граничні межі вологості ґрунту")
-                                            Image(systemName: "arrow.trianglehead.left.and.right.righttriangle.left.righttriangle.right.fill")
-                                        }
+                            LazyVGrid(columns: [GridItem(.adaptive(minimum: 160), spacing: 20)], spacing: 20) {
+                                RowDeviceInfoViewModel(
+                                    imageName: "drop.fill",
+                                    mainText: "Вологість ґрунту",
+                                    bodyText: "\(bluetoothManager.iFlowerMainDevice.soilMoisture)%",
+                                    colorImage: .accentColor,
+                                    maxHeight: scrollViewSensorHeight
+                                )
+                                .contextMenu {
+                                    Button {
+                                        self.bluetoothManager.iFlowerMainDevice.isEditSoilMisture.toggle()
+                                    } label: {
+                                        Label("Редагувати граничні межі вологості ґрунту", systemImage: "arrow.trianglehead.left.and.right.righttriangle.left.righttriangle.right.fill")
                                     }
+                                }
 
-                                RowDeviceInfoViewModel(imageName: "thermometer.medium", mainText: "Температура", bodyText: String(bluetoothManager.iFlowerMainDevice.airTemperature) + "°C", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
-                                
-                                RowDeviceInfoViewModel(imageName: "humidity", mainText: "Волога повітря", bodyText: String(bluetoothManager.iFlowerMainDevice.airHumidity) + "%", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
-                                
-                                RowDeviceInfoViewModel(imageName: "lightbulb", mainText: "Рівень освітлення", bodyText: String(bluetoothManager.iFlowerMainDevice.lightLevel) + " Люменів", colorImage: Color.accentColor, maxHeight: scrollViewSensorHeight)
-                            }// LazyHGrid
+                                RowDeviceInfoViewModel(
+                                    imageName: "thermometer.medium",
+                                    mainText: "Температура",
+                                    bodyText: "\(bluetoothManager.iFlowerMainDevice.airTemperature)°C",
+                                    colorImage: .accentColor,
+                                    maxHeight: scrollViewSensorHeight
+                                )
+
+                                RowDeviceInfoViewModel(
+                                    imageName: "humidity",
+                                    mainText: "Волога повітря",
+                                    bodyText: "\(bluetoothManager.iFlowerMainDevice.airHumidity)%",
+                                    colorImage: .accentColor,
+                                    maxHeight: scrollViewSensorHeight
+                                )
+
+                                RowDeviceInfoViewModel(
+                                    imageName: "lightbulb",
+                                    mainText: "Рівень освітлення",
+                                    bodyText: "\(bluetoothManager.iFlowerMainDevice.lightLevel) Люменів",
+                                    colorImage: .accentColor,
+                                    maxHeight: scrollViewSensorHeight
+                                )
+                            }
                             .padding(.horizontal)
-                        }// ScrollView with the main information from sensor's
-                        .frame(height: scrollViewSensorHeight)
                         
                         HStack
                         {
@@ -270,140 +274,115 @@ struct DeviceControllerView: View
                             Spacer()
                         }//HStack with button for open or close scrollView with action's
                         
-                        ScrollView(.horizontal, showsIndicators: false)
-                        {
-                            LazyHGrid(rows: [GridItem(.adaptive(minimum: 90))], spacing: 20)
-                            {
-                                Button
-                                {
-                                    withAnimation(Animation.easeInOut(duration: 0.25))
-                                    {
-                                        self.bluetoothManager.iFlowerMainDevice.isWatering.toggle()
-                                    }
+                        LazyVGrid(columns: [GridItem(.adaptive(minimum: 200), spacing: 20)], spacing: 20) {
+                            
+                            // Кнопка поливу
+                            Button {
+                                withAnimation(Animation.easeInOut(duration: 0.25)) {
+                                    self.bluetoothManager.iFlowerMainDevice.isWatering.toggle()
+                                }
+                                
+                                if self.bluetoothManager.iFlowerMainDevice.isWatering {
+                                    self.bluetoothManager.sendData("turnOnWatering\n")
+                                } else {
+                                    self.bluetoothManager.sendData("turnOffWatering\n")
+                                }
+                            } label: {
+                                ZStack {
+                                    Color(self.bluetoothManager.iFlowerMainDevice.isWatering ? "MainBGUsedColor" : "MainBlurBGColor").opacity(0.25)
                                     
-                                    if self.bluetoothManager.iFlowerMainDevice.isWatering
-                                    {
-                                        self.bluetoothManager.sendData("turnOnWatering\n")
+                                    HStack {
+                                        Image(systemName: self.bluetoothManager.iFlowerMainDevice.isWatering ? "drop.degreesign" : "drop")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(bluetoothManager.iFlowerMainDevice.isWatering ? Color.accentColor : Color.gray)
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text(self.bluetoothManager.iFlowerMainDevice.isWatering ? "Виключити полив рослини" : "Включити полив рослини")
+                                                .font(.headline)
+                                                .fontWeight(.semibold)
+                                                .foregroundColor(Color.primary)
+                                                .padding(.vertical)
+                                        }
+                                        .padding(.leading, 2)
                                     }
-                                    else
-                                    {
-                                        self.bluetoothManager.sendData("turnOffWatering\n")
-                                    }
+                                    .padding(10)
                                 }
-                                label:
-                                {
-                                    ZStack
-                                    {
-                                        Color(self.bluetoothManager.iFlowerMainDevice.isWatering ? "MainBGUsedColor" : "MainBlurBGColor").opacity(0.25)
-
-                                        HStack
-                                        {
-                                            Image(systemName: self.bluetoothManager.iFlowerMainDevice.isWatering ? "drop.degreesign" : "drop")
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 20, height: 20)
-                                                .foregroundColor(bluetoothManager.iFlowerMainDevice.isWatering ? Color.accentColor : Color.gray)
-                                            
-                                            VStack(alignment: .leading)
-                                            {
-                                                Text(self.bluetoothManager.iFlowerMainDevice.isWatering ? "Виключити полив рослини" : "Включити полив рослини")
-                                                    .font(.headline)
-                                                    .fontWeight(.semibold)
-                                                    .foregroundColor(Color.primary)
-                                                    .padding(.vertical)
-                                            }// VStack with detail info
-                                            .padding(.leading, 2)
-                                        }// Main HStack
-                                        .padding(10)
-                                    }// ZStack with info
-                                    .frame(maxHeight: scrollViewActionsHeight)
-                                    .cornerRadius(20)
-                                    .shadow(radius: 5)
-                                }// button for on watering
-                                .buttonStyle(PlainButtonStyle())
-                                
-                                Button
-                                {
-                                    withAnimation(Animation.easeInOut(duration: 0.25))
-                                    {
-                                        self.isVentilation.toggle()
-                                    }
+                                .frame(maxHeight: scrollViewActionsHeight)
+                                .cornerRadius(20)
+                                .shadow(radius: 5)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                            // Кнопка вентиляції
+                            Button {
+                                withAnimation(Animation.easeInOut(duration: 0.25)) {
+                                    self.isVentilation.toggle()
                                 }
-                                label:
-                                {
-                                    ZStack
-                                    {
-                                        Color(self.isVentilation ? "MainBGUsedColor" : "MainBlurBGColor").opacity(0.25)
-
-                                        HStack
-                                        {
-                                            Image(systemName: self.isVentilation ? "window.ceiling" : "window.ceiling.closed")
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 20, height: 20)
-                                                .foregroundColor(self.isVentilation ? Color.accentColor : Color.gray)
-                                            
-                                            VStack(alignment: .leading)
-                                            {
-                                                Text(self.isVentilation ? "Закрити вентиляцію" : "Відкрити вентиляцію")
-                                                    .font(.headline)
-                                                    .fontWeight(.semibold)
-                                                    .foregroundColor(Color.primary)
-                                                    .padding(.vertical)
-                                            }// VStack with detail info
-                                            .padding(.leading, 2)
-                                        }// Main HStack
-                                        .padding(10)
-                                    }// ZStack with info
-                                    .frame(maxHeight: scrollViewActionsHeight)
-                                    .cornerRadius(20)
-                                    .shadow(radius: 5)
-                                }// button for open ventilation
-                                .buttonStyle(PlainButtonStyle())
-                                
-                                Button
-                                {
-                                    withAnimation(Animation.easeInOut(duration: 0.25))
-                                    {
-                                        self.isLamp.toggle()
+                            } label: {
+                                ZStack {
+                                    Color(self.isVentilation ? "MainBGUsedColor" : "MainBlurBGColor").opacity(0.25)
+                                    
+                                    HStack {
+                                        Image(systemName: self.isVentilation ? "window.ceiling" : "window.ceiling.closed")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(self.isVentilation ? Color.accentColor : Color.gray)
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text(self.isVentilation ? "Закрити вентиляцію" : "Відкрити вентиляцію")
+                                                .font(.headline)
+                                                .fontWeight(.semibold)
+                                                .foregroundColor(Color.primary)
+                                                .padding(.vertical)
+                                        }
+                                        .padding(.leading, 2)
                                     }
+                                    .padding(10)
                                 }
-                                label:
-                                {
-                                    ZStack
-                                    {
-                                        Color(self.isLamp ? "MainBGUsedColor" : "MainBlurBGColor").opacity(0.25)
-
-                                        HStack
-                                        {
-                                            Image(systemName: self.isLamp ? "lightbulb.max" : "lightbulb.slash")
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 20, height: 20)
-                                                .foregroundColor(self.isLamp ? Color.accentColor : Color.gray)
-                                            
-                                            VStack(alignment: .leading)
-                                            {
-                                                Text(self.isLamp ? "Виключити освітлення" : "Включити освітлення")
-                                                    .font(.headline)
-                                                    .fontWeight(.semibold)
-                                                    .foregroundColor(Color.primary)
-                                                    .padding(.vertical)
-                                            }// VStack with detail info
-                                            .padding(.leading, 2)
-                                        }// Main HStack
-                                        .padding(10)
-                                    }// ZStack with info
-                                    .frame(maxHeight: scrollViewActionsHeight)
-                                    .cornerRadius(20)
-                                    .shadow(radius: 5)
-                                }// button for on lamp
-                                .buttonStyle(PlainButtonStyle())
-                            }// LazyHGrid
-                            .padding()
-                        }// ScrollView with the main information iFlower device
-                        .frame(height: scrollViewActionsHeight)
-                        
+                                .frame(maxHeight: scrollViewActionsHeight)
+                                .cornerRadius(20)
+                                .shadow(radius: 5)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                            // Кнопка освітлення
+                            Button {
+                                withAnimation(Animation.easeInOut(duration: 0.25)) {
+                                    self.isLamp.toggle()
+                                }
+                            } label: {
+                                ZStack {
+                                    Color(self.isLamp ? "MainBGUsedColor" : "MainBlurBGColor").opacity(0.25)
+                                    
+                                    HStack {
+                                        Image(systemName: self.isLamp ? "lightbulb.max" : "lightbulb.slash")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 20, height: 20)
+                                            .foregroundColor(self.isLamp ? Color.accentColor : Color.gray)
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text(self.isLamp ? "Виключити освітлення" : "Включити освітлення")
+                                                .font(.headline)
+                                                .fontWeight(.semibold)
+                                                .foregroundColor(Color.primary)
+                                                .padding(.vertical)
+                                        }
+                                        .padding(.leading, 2)
+                                    }
+                                    .padding(10)
+                                }
+                                .frame(maxHeight: scrollViewActionsHeight)
+                                .cornerRadius(20)
+                                .shadow(radius: 5)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                        }
+                        .padding()
             
                         HStack
                         {

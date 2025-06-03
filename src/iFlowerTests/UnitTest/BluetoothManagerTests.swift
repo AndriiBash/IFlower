@@ -107,10 +107,13 @@ class BluetoothManagerTests: XCTestCase
             "soilMoisture": 30,
             "airHumidity": 40,
             "lightLevel": 50,
-            "airTemperature": 20
+            "airTemperature": 20,
+            "isWatering": false,
+            "minSoilMoisture": 0
+            "maxSoilMoisture": 100
         }
         """
-
+        
         bluetoothManager.processJSON(jsonString)
         
         XCTAssertEqual(bluetoothManager.iFlowerMainDevice.serialNumber, "1234-5678-9101-1121")
@@ -120,6 +123,9 @@ class BluetoothManagerTests: XCTestCase
         XCTAssertEqual(bluetoothManager.iFlowerMainDevice.lightLevel, 50)
         XCTAssertEqual(bluetoothManager.iFlowerMainDevice.airTemperature, 20)
     }// func testProcessJSON() throws
+    
+    
+    
 }// class BluetoothManagerTests: XCTestCase
 
 
@@ -131,7 +137,7 @@ protocol CentralManagerProtocol
     func cancelPeripheralConnection(_ peripheral: PeripheralProtocol)
 }// protocol CentralManagerProtocol
 
-
+ 
 protocol PeripheralProtocol
 {
     var name: String? { get }
@@ -141,48 +147,37 @@ protocol PeripheralProtocol
 
 class MockCentralManager: CentralManagerProtocol
 {
-    func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: [String : Any]?)
-    {
+    func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: [String : Any]?) {
         isScanning = true
     }// func scanForPeripherals(withServices serviceUUIDs: [CBUUID]?, options: [String : Any]?)
     
-    func startScanning()
-    {
+    func startScanning() {
         isScanning = true
     }// func startScanning()
     
-    func stopScan()
-    {
+    func stopScan() {
         isScanning = false
     }// func stopScan()
     
-    
-    func connect(_ peripheral: PeripheralProtocol, options: [String : Any]?)
-    {
+    func connect(_ peripheral: PeripheralProtocol, options: [String : Any]?) {
         isConnected = true
     }// func connect(_ peripheral: PeripheralProtocol, options: [String : Any]?)
     
-    
-    func cancelPeripheralConnection(_ peripheral: PeripheralProtocol)
-    {
+    func cancelPeripheralConnection(_ peripheral: PeripheralProtocol) {
         isConnected = false
     }// func cancelPeripheralConnection(_ peripheral: PeripheralProtocol)
 
-    
     var isScanning = false
     var isConnected = false
 }// class MockCentralManager: CentralManagerProtocol
 
 
-class MockPeripheral: PeripheralProtocol
-{
-    var name: String?
-    {
+class MockPeripheral: PeripheralProtocol {
+    var name: String? {
         return "MockPeripheral"
     }
     
-    var identifier: UUID
-    {
+    var identifier: UUID {
         return UUID(uuidString: "00001122-3344-4556-6778-899aabbccdde")!
     }
 }// class MockPeripheral: PeripheralProtocol
